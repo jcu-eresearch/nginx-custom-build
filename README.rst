@@ -18,7 +18,7 @@ Building Nginx for eResearch
 * Clone this repository or copy files into ``~/rpmbuild/SPECS``.
 * Install Nginx SRPM::
 
-      rpm -ihv http://nginx.org/packages/rhel/6/SRPMS/nginx-1.4.0-1.el6.ngx.src.rpm
+      rpm -ihv http://nginx.org/packages/rhel/6/SRPMS/nginx-1.4.1-1.el6.ngx.src.rpm
 * Run ``./nginx-build.sh`` and it will download dependencies and build
   the package accordingly.
 * Your RPMs will be produced and will be available within
