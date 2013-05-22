@@ -4,7 +4,8 @@ About this Nginx
 This version of Nginx is customised in a number of different ways:
 
 * Has a custom version of ``ngx_http_auth_request_module`` that supports 
-  FastCGI authorizers.
+  a flavour of FastCGI "authorizer" that passes authorizer headers to
+  as incoming headers to an upstream backend (proxy, uWGSI, FastCGI, etc).
 * Has the ``ngx-fancyindex`` module for folder listings.
 * Has the ``ngx_ajp_module`` module for talking to AJP backends.
 * Has XLST support built.
