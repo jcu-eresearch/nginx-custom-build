@@ -13,14 +13,24 @@ This version of Nginx is customised in a number of different ways:
 
 See the build script for details of where these dependencies live.
 
-Building Nginx for eResearch
-============================
+Building Nginx
+==============
 
-* Clone this repository or copy files into ``~/rpmbuild/SPECS``.
-* Install Nginx SRPM::
+#. Ensure Vagrant is installed.
 
-      rpm -ihv http://nginx.org/packages/rhel/6/SRPMS/nginx-1.4.1-1.el6.ngx.src.rpm
-* Run ``./nginx-build.sh`` and it will download dependencies and build
-  the package accordingly.
-* Your RPMs will be produced and will be available within
-  ``~/rpmbuild/RPMS/``.
+#. Run the following::
+
+       git clone https://github.com/jcu-eresearch/nginx-custom-build.git
+       cd nginx-custom-build
+       vagrant up; vagrant destroy -f
+       ls x86_64
+
+#. Enjoy your new RPMs, available in the current directory.
+
+If you're not into Vagrant, then you can manually run 
+https://github.com/jcu-eresearch/nginx-custom-build/blob/master/nginx-build.sh
+on your own EL 6 machine, ensuring that you have the ``*.patch`` files
+from this repository in your ``~/rpmbuild/SPECS`` directory.
+
+This Vagrant configuration will always build the **latest stable** version
+of Nginx.
