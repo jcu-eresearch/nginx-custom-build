@@ -37,3 +37,10 @@ from this repository in your ``~/rpmbuild/SPECS`` directory.
 
 This Vagrant configuration will always build the **latest stable** version
 of Nginx.
+
+Credits
+=======
+
+* Thanks to Laurence Rowe for the patches for making HTML transformations
+  possible at https://bitbucket.org/lrowe/nginx-xslt-html-parser
+
