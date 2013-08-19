@@ -41,7 +41,8 @@ popd
 #      or located at /vagrant 
 pushd ~/rpmbuild/SPECS
 if [ -d "/vagrant" ]; then
-    rsync --no-relative -vahu /vagrant/* ~/rpmbuild/SPECS/
+    cp /vagrant/nginx-eresearch.patch ~/rpmbuild/SPECS/
+    cp /vagrant/nginx-xslt-html-parser.patch ~/rpmbuild/SOURCES/
 fi
 patch -p1 < nginx-eresearch.patch
 spectool -g -R nginx.spec

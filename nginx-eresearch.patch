@@ -9,11 +9,11 @@ index e9fa05b..0e807c1 100644
  %define nginx_group nginx
  
 -Summary: nginx is a high performance web server
-+Summary: nginx is a high performance web server (Built with XSLT and Auth Request modules)
++Summary: nginx is a high performance web server (Built with XSLT, XSLT HTML Parser, and Auth Request modules)
  Name: nginx
  Version: 1.3.16
  Release: 1%{?dist}.ngx
-@@ -18,6 +17,10 @@ Source4: nginx.conf
+@@ -18,6 +17,11 @@ Source4: nginx.conf
  Source5: nginx.vh.default.conf
  Source6: nginx.vh.example_ssl.conf
  Source7: nginx.suse.init
@@ -21,10 +21,11 @@ index e9fa05b..0e807c1 100644
 +Source9: headers-more-nginx-module-0.19
 +Source10: ngx-fancyindex
 +Source11: nginx_ajp_module
++Source12: nginx-xslt-html-parser.patch
  
  License: 2-clause BSD-like license
  %if 0%{?suse_version}
-@@ -54,6 +57,11 @@ not stripped version of nginx build with the debugging log support
+@@ -54,6 +57,12 @@ not stripped version of nginx build with the debugging log support
  
  %prep
  %setup -q
@@ -33,6 +34,7 @@ index e9fa05b..0e807c1 100644
 +cp -R -p %SOURCE10 .
 +cp -R -p %SOURCE11 .
 +patch -p1 < %SOURCE11/ajp.patch
++patch -p1 < %SOURCE12
  
  %build
  ./configure \

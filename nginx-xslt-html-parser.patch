@@ -1,0 +1,200 @@
+diff -r 50f065641b4c src/http/modules/ngx_http_xslt_filter_module.c
+--- a/src/http/modules/ngx_http_xslt_filter_module.c	Wed Jul 17 16:51:21 2013 +0400
++++ b/src/http/modules/ngx_http_xslt_filter_module.c	Fri Aug 16 16:17:57 2013 +1000
+@@ -10,6 +10,7 @@
+ #include <ngx_http.h>
+ 
+ #include <libxml/parser.h>
++#include <libxml/HTMLparser.h>
+ #include <libxml/tree.h>
+ #include <libxslt/xslt.h>
+ #include <libxslt/xsltInternals.h>
+@@ -58,6 +59,7 @@
+     ngx_hash_t                 types;
+     ngx_array_t               *types_keys;
+     ngx_array_t               *params;       /* ngx_http_xslt_param_t */
++    ngx_flag_t                 html_parser;
+ } ngx_http_xslt_filter_loc_conf_t;
+ 
+ 
+@@ -67,6 +69,7 @@
+     xsltTransformContextPtr    transform;
+     ngx_http_request_t        *request;
+     ngx_array_t                params;
++    ngx_flag_t                 html_parser;
+ 
+     ngx_uint_t                 done;         /* unsigned  done:1; */
+ } ngx_http_xslt_filter_ctx_t;
+@@ -150,6 +153,13 @@
+       offsetof(ngx_http_xslt_filter_loc_conf_t, types_keys),
+       &ngx_http_xslt_default_types[0] },
+ 
++    { ngx_string("xslt_html_parser"),
++      NGX_HTTP_LOC_CONF|NGX_CONF_FLAG,
++      ngx_conf_set_flag_slot,
++      NGX_HTTP_LOC_CONF_OFFSET,
++      offsetof(ngx_http_xslt_filter_loc_conf_t, html_parser),
++      NULL },
++
+       ngx_null_command
+ };
+ 
+@@ -225,6 +235,8 @@
+ 
+     r->main_filter_need_in_memory = 1;
+ 
++    ctx->html_parser = conf->html_parser;
++
+     return NGX_OK;
+ }
+ 
+@@ -261,24 +273,39 @@
+                 xmlFreeDoc(ctx->ctxt->myDoc);
+             }
+ 
+-            xmlFreeParserCtxt(ctx->ctxt);
++            if (ctx->html_parser) {
++                htmlFreeParserCtxt(ctx->ctxt);
++            } else {
++                xmlFreeParserCtxt(ctx->ctxt);
++            }
+ 
+             return ngx_http_xslt_send(r, ctx, NULL);
+         }
+ 
+         if (cl->buf->last_buf || cl->buf->last_in_chain) {
+ 
++            if (ctx->ctxt == NULL) {
++                /* empty body */
++                return ngx_http_next_header_filter(r);
++            }
++
+             ctx->doc = ctx->ctxt->myDoc;
+ 
+ #if (NGX_HTTP_XSLT_REUSE_DTD)
+-            ctx->doc->extSubset = NULL;
++            if (ctx->doc) {
++                ctx->doc->extSubset = NULL;
++            }
+ #endif
+ 
+             wellFormed = ctx->ctxt->wellFormed;
+ 
+-            xmlFreeParserCtxt(ctx->ctxt);
++            if (ctx->html_parser) {
++                htmlFreeParserCtxt(ctx->ctxt);
++            } else {
++                xmlFreeParserCtxt(ctx->ctxt);
++            }
+ 
+-            if (wellFormed) {
++            if (wellFormed || ctx->html_parser) {
+                 return ngx_http_xslt_send(r, ctx,
+                                        ngx_http_xslt_apply_stylesheet(r, ctx));
+             }
+@@ -353,22 +380,51 @@
+     ngx_buf_t *b)
+ {
+     int               err;
+-    xmlParserCtxtPtr  ctxt;
++    xmlParserCtxtPtr  ctxt = NULL;
++    xmlCharEncoding   enc = XML_CHAR_ENCODING_NONE;
+ 
+     if (ctx->ctxt == NULL) {
+ 
+-        ctxt = xmlCreatePushParserCtxt(NULL, NULL, NULL, 0, NULL);
+-        if (ctxt == NULL) {
+-            ngx_log_error(NGX_LOG_ERR, r->connection->log, 0,
+-                          "xmlCreatePushParserCtxt() failed");
+-            return NGX_ERROR;
++        if (b->last == b->pos) {
++            return NGX_OK;
+         }
+-        xmlCtxtUseOptions(ctxt, XML_PARSE_NOENT|XML_PARSE_DTDLOAD
+-                                               |XML_PARSE_NOWARNING);
+ 
+-        ctxt->sax->externalSubset = ngx_http_xslt_sax_external_subset;
++        if (ctx->html_parser) {
++            if (r->headers_out.charset.len) {
++                enc = xmlParseCharEncoding(
++                                   (const char *) r->headers_out.charset.data);
++                if (enc == XML_CHAR_ENCODING_ERROR) {
++                    ngx_log_error(NGX_LOG_ERR, r->connection->log, 0,
++                                  "xmlParseCharEncoding() failed charset: %s",
++                                  r->headers_out.charset.data);
++                    return NGX_ERROR;
++                }
++            }
++
++            ctxt = htmlCreatePushParserCtxt(NULL, NULL, NULL, 0, NULL, enc);
++            if (ctxt == NULL) {
++                ngx_log_error(NGX_LOG_ERR, r->connection->log, 0,
++                              "htmlCreatePushParserCtxt() failed");
++                return NGX_ERROR;
++            }
++
++            htmlCtxtUseOptions(ctxt, HTML_PARSE_RECOVER|HTML_PARSE_NOERROR
++                                                       |HTML_PARSE_NOWARNING);
++
++        } else {
++            ctxt = xmlCreatePushParserCtxt(NULL, NULL, NULL, 0, NULL);
++            if (ctxt == NULL) {
++                ngx_log_error(NGX_LOG_ERR, r->connection->log, 0,
++                              "xmlCreatePushParserCtxt() failed");
++                return NGX_ERROR;
++            }
++            xmlCtxtUseOptions(ctxt, XML_PARSE_NOENT|XML_PARSE_DTDLOAD
++                                                   |XML_PARSE_NOWARNING);
++
++            ctxt->sax->externalSubset = ngx_http_xslt_sax_external_subset;
++            ctxt->sax->error = ngx_http_xslt_sax_error;
++        }
+         ctxt->sax->setDocumentLocator = NULL;
+-        ctxt->sax->error = ngx_http_xslt_sax_error;
+         ctxt->sax->fatalError = ngx_http_xslt_sax_error;
+         ctxt->sax->_private = ctx;
+ 
+@@ -376,10 +432,15 @@
+         ctx->request = r;
+     }
+ 
++    if (ctx->html_parser) {
++    err = htmlParseChunk(ctx->ctxt, (char *) b->pos, (int) (b->last - b->pos),
++                         (b->last_buf) || (b->last_in_chain));
++    } else {
+     err = xmlParseChunk(ctx->ctxt, (char *) b->pos, (int) (b->last - b->pos),
+                         (b->last_buf) || (b->last_in_chain));
++    }
+ 
+-    if (err == 0) {
++    if (ctx->done == 0) {
+         b->pos = b->last;
+         return NGX_OK;
+     }
+@@ -464,6 +525,8 @@
+ 
+     ngx_log_error(NGX_LOG_ERR, ctx->request->connection->log, 0,
+                   "libxml2 error: \"%*s\"", n + 1, buf);
++
++    ctx->done = 1; /* stop further chunk parsing */
+ }
+ 
+ 
+@@ -1058,6 +1121,8 @@
+      *     conf->params = NULL;
+      */
+ 
++    conf->html_parser = NGX_CONF_UNSET;
++
+     return conf;
+ }
+ 
+@@ -1088,6 +1153,8 @@
+         return NGX_CONF_ERROR;
+     }
+ 
++    ngx_conf_merge_value(conf->html_parser, prev->html_parser, 0);
++
+     return NGX_CONF_OK;
+ }
+ 
