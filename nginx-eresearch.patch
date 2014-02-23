@@ -1,31 +1,29 @@
 diff --git a/nginx.spec b/nginx.spec
-index e9fa05b..0e807c1 100644
+index a2bd374..a34710f 100644
 --- a/nginx.spec
 +++ b/nginx.spec
-@@ -1,9 +1,8 @@
--#
- %define nginx_home %{_localstatedir}/cache/nginx
+@@ -3,7 +3,7 @@
  %define nginx_user nginx
  %define nginx_group nginx
  
--Summary: nginx is a high performance web server
-+Summary: nginx is a high performance web server (Built with XSLT, XSLT HTML Parser, and Auth Request modules)
+-Summary: High performance web server
++Summary: High performance web server (Built with XSLT, XSLT HTML Parser, and Auth Request modules)
  Name: nginx
- Version: 1.3.16
+ Version: 1.4.5
  Release: 1%{?dist}.ngx
-@@ -18,6 +17,11 @@ Source4: nginx.conf
+@@ -18,6 +18,11 @@ Source4: nginx.conf
  Source5: nginx.vh.default.conf
  Source6: nginx.vh.example_ssl.conf
  Source7: nginx.suse.init
 +Source8: ngx_http_auth_request_module
-+Source9: headers-more-nginx-module-0.19
++Source9: headers-more-nginx-module
 +Source10: ngx-fancyindex
 +Source11: nginx_ajp_module
 +Source12: nginx-xslt-html-parser.patch
  
  License: 2-clause BSD-like license
  %if 0%{?suse_version}
-@@ -54,6 +57,12 @@ not stripped version of nginx build with the debugging log support
+@@ -54,6 +59,11 @@ Not stripped version of nginx built with the debugging log support.
  
  %prep
  %setup -q
@@ -33,12 +31,11 @@ index e9fa05b..0e807c1 100644
 +cp -R -p %SOURCE9 . 
 +cp -R -p %SOURCE10 .
 +cp -R -p %SOURCE11 .
-+patch -p1 < %SOURCE11/ajp.patch
 +patch -p1 < %SOURCE12
  
  %build
  ./configure \
-@@ -89,6 +97,13 @@ not stripped version of nginx build with the debugging log support
+@@ -89,6 +99,13 @@ Not stripped version of nginx built with the debugging log support.
          --with-ipv6 \
          --with-debug \
          --with-cc-opt="%{optflags} $(pcre-config --cflags)" \
@@ -46,13 +43,13 @@ index e9fa05b..0e807c1 100644
 +        --with-http_xslt_module \
 +        --add-module=%{_builddir}/%{name}-%{version}/ngx-fancyindex \
 +        --add-module=%{_builddir}/%{name}-%{version}/nginx_ajp_module \
-+        --add-module=%{_builddir}/%{name}-%{version}/headers-more-nginx-module-0.19 \
++        --add-module=%{_builddir}/%{name}-%{version}/headers-more-nginx-module \
 +        --add-module=%{_builddir}/%{name}-%{version}/ngx_http_auth_request_module \
 +#        --add-module=%{_builddir}/%{name}-%{version}/ngx_http_auth_request_module-a29d74804ff1 \
          $*
  make %{?_smp_mflags}
  %{__mv} %{_builddir}/%{name}-%{version}/objs/nginx \
-@@ -125,6 +140,13 @@ make %{?_smp_mflags}
+@@ -125,6 +142,13 @@ make %{?_smp_mflags}
          --with-file-aio \
          --with-ipv6 \
          --with-cc-opt="%{optflags} $(pcre-config --cflags)" \
@@ -60,7 +57,7 @@ index e9fa05b..0e807c1 100644
 +        --with-http_xslt_module \
 +        --add-module=%{_builddir}/%{name}-%{version}/ngx-fancyindex \
 +        --add-module=%{_builddir}/%{name}-%{version}/nginx_ajp_module \
-+        --add-module=%{_builddir}/%{name}-%{version}/headers-more-nginx-module-0.19 \
++        --add-module=%{_builddir}/%{name}-%{version}/headers-more-nginx-module \
 +        --add-module=%{_builddir}/%{name}-%{version}/ngx_http_auth_request_module \
 +#        --add-module=%{_builddir}/%{name}-%{version}/ngx_http_auth_request_module-a29d74804ff1 \
          $*

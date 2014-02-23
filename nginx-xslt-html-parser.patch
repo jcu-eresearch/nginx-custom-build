@@ -134,7 +134,7 @@ diff -r 50f065641b4c src/http/modules/ngx_http_xslt_filter_module.c
 +            }
 +
 +            htmlCtxtUseOptions(ctxt, HTML_PARSE_RECOVER|HTML_PARSE_NOERROR
-+                                                       |HTML_PARSE_NOWARNING);
++                                     |HTML_PARSE_NOWARNING|HTML_PARSE_COMPACT);
 +
 +        } else {
 +            ctxt = xmlCreatePushParserCtxt(NULL, NULL, NULL, 0, NULL);
@@ -144,7 +144,7 @@ diff -r 50f065641b4c src/http/modules/ngx_http_xslt_filter_module.c
 +                return NGX_ERROR;
 +            }
 +            xmlCtxtUseOptions(ctxt, XML_PARSE_NOENT|XML_PARSE_DTDLOAD
-+                                                   |XML_PARSE_NOWARNING);
++                                    |XML_PARSE_NOWARNING|XML_PARSE_COMPACT);
 +
 +            ctxt->sax->externalSubset = ngx_http_xslt_sax_external_subset;
 +            ctxt->sax->error = ngx_http_xslt_sax_error;

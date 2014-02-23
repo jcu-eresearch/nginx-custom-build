@@ -29,11 +29,19 @@ popd
 
 #Get various add-on modules for Nginx
 pushd ~/rpmbuild/SOURCES
+
+#Patched auth request module
 hg clone https://bitbucket.org/davidjb/ngx_http_auth_request_module
-wget https://github.com/agentzh/headers-more-nginx-module/archive/v0.19.tar.gz -O headers-more-nginx-module-0.19.tar.gz
-tar xvf headers-more-nginx-module-0.19.tar.gz
+
+#Headers More module
+git clone https://github.com/agentzh/headers-more-nginx-module.git -b v0.25
+
+#Fancy Index module
 git clone https://github.com/aperezdc/ngx-fancyindex.git
-git clone https://github.com/yaoweibin/nginx_ajp_module.git
+
+#AJP module
+git clone https://github.com/yaoweibin/nginx_ajp_module.git -b v0.3 
+
 popd
 
 #Prep and patch the Nginx specfile for the RPMs

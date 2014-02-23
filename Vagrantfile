@@ -10,7 +10,6 @@ Vagrant.configure("2") do |config|
   config.vm.network :public_network
 
   #Build the custom version of Nginx 
-  config.vm.provision :shell, :path => "sync-shared-folder.sh"
   config.vm.provision :shell, :path => "nginx-build.sh"
   config.vm.provision :shell, :path => "copy-rpms-out.sh"
 
