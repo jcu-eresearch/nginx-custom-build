@@ -1,5 +1,5 @@
 diff --git a/nginx.spec b/nginx.spec
-index a2bd374..a34710f 100644
+index 39e2339..9157b2e 100644
 --- a/nginx.spec
 +++ b/nginx.spec
 @@ -3,7 +3,7 @@
@@ -7,11 +7,11 @@ index a2bd374..a34710f 100644
  %define nginx_group nginx
  
 -Summary: High performance web server
-+Summary: High performance web server (Built with XSLT, XSLT HTML Parser, and Auth Request modules)
++Summary: High performance web server (Built with LDAP, XSLT, XSLT HTML Parser, and Auth Request modules)
  Name: nginx
- Version: 1.4.5
+ Version: 1.4.6
  Release: 1%{?dist}.ngx
-@@ -18,6 +18,11 @@ Source4: nginx.conf
+@@ -18,6 +18,12 @@ Source4: nginx.conf
  Source5: nginx.vh.default.conf
  Source6: nginx.vh.example_ssl.conf
  Source7: nginx.suse.init
@@ -20,10 +20,19 @@ index a2bd374..a34710f 100644
 +Source10: ngx-fancyindex
 +Source11: nginx_ajp_module
 +Source12: nginx-xslt-html-parser.patch
++Source13: nginx-auth-ldap 
  
  License: 2-clause BSD-like license
  %if 0%{?suse_version}
-@@ -54,6 +59,11 @@ Not stripped version of nginx built with the debugging log support.
+@@ -29,6 +35,7 @@ Group: System Environment/Daemons
+ BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
+ BuildRequires: zlib-devel
+ BuildRequires: pcre-devel
++BuildRequires: openldap-devel
+ BuildRequires: perl
+ %if 0%{?suse_version}
+ BuildRequires: libopenssl-devel
+@@ -54,6 +61,12 @@ Not stripped version of nginx built with the debugging log support.
  
  %prep
  %setup -q
@@ -32,10 +41,11 @@ index a2bd374..a34710f 100644
 +cp -R -p %SOURCE10 .
 +cp -R -p %SOURCE11 .
 +patch -p1 < %SOURCE12
++cp -R -p %SOURCE13 .
  
  %build
  ./configure \
-@@ -89,6 +99,13 @@ Not stripped version of nginx built with the debugging log support.
+@@ -89,6 +102,13 @@ Not stripped version of nginx built with the debugging log support.
          --with-ipv6 \
          --with-debug \
          --with-cc-opt="%{optflags} $(pcre-config --cflags)" \
@@ -45,11 +55,11 @@ index a2bd374..a34710f 100644
 +        --add-module=%{_builddir}/%{name}-%{version}/nginx_ajp_module \
 +        --add-module=%{_builddir}/%{name}-%{version}/headers-more-nginx-module \
 +        --add-module=%{_builddir}/%{name}-%{version}/ngx_http_auth_request_module \
-+#        --add-module=%{_builddir}/%{name}-%{version}/ngx_http_auth_request_module-a29d74804ff1 \
++        --add-module=%{_builddir}/%{name}-%{version}/nginx-auth-ldap \
          $*
  make %{?_smp_mflags}
  %{__mv} %{_builddir}/%{name}-%{version}/objs/nginx \
-@@ -125,6 +142,13 @@ make %{?_smp_mflags}
+@@ -125,6 +145,13 @@ make %{?_smp_mflags}
          --with-file-aio \
          --with-ipv6 \
          --with-cc-opt="%{optflags} $(pcre-config --cflags)" \
@@ -59,7 +69,7 @@ index a2bd374..a34710f 100644
 +        --add-module=%{_builddir}/%{name}-%{version}/nginx_ajp_module \
 +        --add-module=%{_builddir}/%{name}-%{version}/headers-more-nginx-module \
 +        --add-module=%{_builddir}/%{name}-%{version}/ngx_http_auth_request_module \
-+#        --add-module=%{_builddir}/%{name}-%{version}/ngx_http_auth_request_module-a29d74804ff1 \
++        --add-module=%{_builddir}/%{name}-%{version}/nginx-auth-ldap \
          $*
  make %{?_smp_mflags}
  

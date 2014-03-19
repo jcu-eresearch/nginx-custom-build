@@ -3,7 +3,10 @@ About this Nginx
 
 This version of Nginx is customised in a number of different ways:
 
-* *New*: Has custom HTML XSLT transformation built in. This allows 
+* *New*: adds LDAP authentication for Nginx using `nginx-ldap-auth
+  <https://github.com/davidjb/nginx-auth-ldap>`_ (custom fork featuring
+  signficant authentication fix).
+* Has custom HTML XSLT transformation built in. This allows 
   transformation of HTML documents on-the-fly via XSL (eg that which
   comes from `Diazo <http://diazo.org>`_ for theming).
 * Has a custom version of ``ngx_http_auth_request_module`` that supports 

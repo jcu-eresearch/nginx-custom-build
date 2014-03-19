@@ -3,16 +3,12 @@
 #Install required packages for building
 sudo yum install -y \
 	rpm-build \
-        rpmdevtools \
+    rpmdevtools \
 	yum-utils \
 	mercurial \
 	git \
 	wget
 
-#Install dependencies for Nginx and associated modules
-sudo yum install -y \
-        libxslt-devel \
-        pcre-devel
 
 #Install source RPM for Nginx
 pushd ~
@@ -42,6 +38,9 @@ git clone https://github.com/aperezdc/ngx-fancyindex.git
 #AJP module
 git clone https://github.com/yaoweibin/nginx_ajp_module.git -b v0.3 
 
+#LDAP authentication module
+git clone https://github.com/davidjb/nginx-auth-ldap.git
+
 popd
 
 #Prep and patch the Nginx specfile for the RPMs
@@ -54,6 +53,7 @@ if [ -d "/vagrant" ]; then
 fi
 patch -p1 < nginx-eresearch.patch
 spectool -g -R nginx.spec
+yum-builddep -y nginx.spec
 rpmbuild -ba nginx.spec
 
 #Test installation and check output
