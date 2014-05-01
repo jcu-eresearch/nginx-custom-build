@@ -26,9 +26,6 @@ popd
 #Get various add-on modules for Nginx
 pushd ~/rpmbuild/SOURCES
 
-#Patched auth request module
-hg clone https://bitbucket.org/davidjb/ngx_http_auth_request_module
-
 #Headers More module
 git clone https://github.com/agentzh/headers-more-nginx-module.git -b v0.25
 
@@ -36,7 +33,7 @@ git clone https://github.com/agentzh/headers-more-nginx-module.git -b v0.25
 git clone https://github.com/aperezdc/ngx-fancyindex.git
 
 #AJP module
-git clone https://github.com/yaoweibin/nginx_ajp_module.git -b v0.3 
+git clone https://github.com/yaoweibin/nginx_ajp_module.git -b v0.3.0
 
 #LDAP authentication module
 git clone https://github.com/davidjb/nginx-auth-ldap.git
@@ -49,6 +46,7 @@ popd
 pushd ~/rpmbuild/SPECS
 if [ -d "/vagrant" ]; then
     cp /vagrant/nginx-eresearch.patch ~/rpmbuild/SPECS/
+    cp /vagrant/nginx-auth-request-module.patch ~/rpmbuild/SOURCES/
     cp /vagrant/nginx-xslt-html-parser.patch ~/rpmbuild/SOURCES/
 fi
 patch -p1 < nginx-eresearch.patch

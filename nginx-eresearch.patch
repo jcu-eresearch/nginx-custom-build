@@ -1,74 +1,73 @@
 diff --git a/nginx.spec b/nginx.spec
-index 39e2339..9157b2e 100644
+index 513ddff..f3e3f5a 100644
 --- a/nginx.spec
 +++ b/nginx.spec
-@@ -3,7 +3,7 @@
- %define nginx_user nginx
- %define nginx_group nginx
+@@ -43,7 +43,7 @@ Requires(pre): pwdutils
+ 
+ # end of distribution specific definitions
  
 -Summary: High performance web server
 +Summary: High performance web server (Built with LDAP, XSLT, XSLT HTML Parser, and Auth Request modules)
  Name: nginx
- Version: 1.4.6
+ Version: 1.6.0
  Release: 1%{?dist}.ngx
-@@ -18,6 +18,12 @@ Source4: nginx.conf
- Source5: nginx.vh.default.conf
- Source6: nginx.vh.example_ssl.conf
+@@ -60,12 +60,21 @@ Source6: nginx.vh.example_ssl.conf
  Source7: nginx.suse.init
-+Source8: ngx_http_auth_request_module
-+Source9: headers-more-nginx-module
-+Source10: ngx-fancyindex
-+Source11: nginx_ajp_module
-+Source12: nginx-xslt-html-parser.patch
-+Source13: nginx-auth-ldap 
+ Source8: nginx.service
+ Source9: nginx.upgrade.sh
++Source10: headers-more-nginx-module
++Source11: ngx-fancyindex
++Source12: nginx_ajp_module
++Source13: nginx-xslt-html-parser.patch
++Source14: nginx-auth-ldap 
++Source15: nginx-auth-request-module.patch
  
  License: 2-clause BSD-like license
- %if 0%{?suse_version}
-@@ -29,6 +35,7 @@ Group: System Environment/Daemons
+ 
  BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
  BuildRequires: zlib-devel
  BuildRequires: pcre-devel
 +BuildRequires: openldap-devel
- BuildRequires: perl
- %if 0%{?suse_version}
- BuildRequires: libopenssl-devel
-@@ -54,6 +61,12 @@ Not stripped version of nginx built with the debugging log support.
++BuildRequires: libxml2-devel
++BuildRequires: libxslt-devel
+ 
+ Provides: webserver
+ 
+@@ -82,6 +91,12 @@ Not stripped version of nginx built with the debugging log support.
  
  %prep
  %setup -q
-+cp -R -p %SOURCE8 .
-+cp -R -p %SOURCE9 . 
-+cp -R -p %SOURCE10 .
++cp -R -p %SOURCE10 . 
 +cp -R -p %SOURCE11 .
-+patch -p1 < %SOURCE12
-+cp -R -p %SOURCE13 .
++cp -R -p %SOURCE12 .
++patch -p1 < %SOURCE13
++cp -R -p %SOURCE14 .
++patch -p1 < %SOURCE15
  
  %build
  ./configure \
-@@ -89,6 +102,13 @@ Not stripped version of nginx built with the debugging log support.
-         --with-ipv6 \
+@@ -119,6 +134,12 @@ Not stripped version of nginx built with the debugging log support.
          --with-debug \
+         %{?with_spdy:--with-http_spdy_module} \
          --with-cc-opt="%{optflags} $(pcre-config --cflags)" \
 +        --with-http_spdy_module \
 +        --with-http_xslt_module \
 +        --add-module=%{_builddir}/%{name}-%{version}/ngx-fancyindex \
 +        --add-module=%{_builddir}/%{name}-%{version}/nginx_ajp_module \
 +        --add-module=%{_builddir}/%{name}-%{version}/headers-more-nginx-module \
-+        --add-module=%{_builddir}/%{name}-%{version}/ngx_http_auth_request_module \
 +        --add-module=%{_builddir}/%{name}-%{version}/nginx-auth-ldap \
          $*
  make %{?_smp_mflags}
  %{__mv} %{_builddir}/%{name}-%{version}/objs/nginx \
-@@ -125,6 +145,13 @@ make %{?_smp_mflags}
-         --with-file-aio \
+@@ -157,6 +178,12 @@ make %{?_smp_mflags}
          --with-ipv6 \
+         %{?with_spdy:--with-http_spdy_module} \
          --with-cc-opt="%{optflags} $(pcre-config --cflags)" \
 +        --with-http_spdy_module \
 +        --with-http_xslt_module \
 +        --add-module=%{_builddir}/%{name}-%{version}/ngx-fancyindex \
 +        --add-module=%{_builddir}/%{name}-%{version}/nginx_ajp_module \
 +        --add-module=%{_builddir}/%{name}-%{version}/headers-more-nginx-module \
-+        --add-module=%{_builddir}/%{name}-%{version}/ngx_http_auth_request_module \
 +        --add-module=%{_builddir}/%{name}-%{version}/nginx-auth-ldap \
          $*
  make %{?_smp_mflags}

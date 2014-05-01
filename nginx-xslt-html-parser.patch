@@ -1,6 +1,7 @@
-diff -r 50f065641b4c src/http/modules/ngx_http_xslt_filter_module.c
---- a/src/http/modules/ngx_http_xslt_filter_module.c	Wed Jul 17 16:51:21 2013 +0400
-+++ b/src/http/modules/ngx_http_xslt_filter_module.c	Fri Aug 16 16:17:57 2013 +1000
+diff --git a/src/http/modules/ngx_http_xslt_filter_module.c b/src/http/modules/ngx_http_xslt_filter_module.c
+index 9e85693..bdffef4 100644
+--- a/src/http/modules/ngx_http_xslt_filter_module.c
++++ b/src/http/modules/ngx_http_xslt_filter_module.c
 @@ -10,6 +10,7 @@
  #include <ngx_http.h>
  
@@ -9,15 +10,15 @@ diff -r 50f065641b4c src/http/modules/ngx_http_xslt_filter_module.c
  #include <libxml/tree.h>
  #include <libxslt/xslt.h>
  #include <libxslt/xsltInternals.h>
-@@ -58,6 +59,7 @@
-     ngx_hash_t                 types;
+@@ -59,6 +60,7 @@ typedef struct {
      ngx_array_t               *types_keys;
      ngx_array_t               *params;       /* ngx_http_xslt_param_t */
+     ngx_flag_t                 last_modified;
 +    ngx_flag_t                 html_parser;
  } ngx_http_xslt_filter_loc_conf_t;
  
  
-@@ -67,6 +69,7 @@
+@@ -68,6 +70,7 @@ typedef struct {
      xsltTransformContextPtr    transform;
      ngx_http_request_t        *request;
      ngx_array_t                params;
@@ -25,9 +26,9 @@ diff -r 50f065641b4c src/http/modules/ngx_http_xslt_filter_module.c
  
      ngx_uint_t                 done;         /* unsigned  done:1; */
  } ngx_http_xslt_filter_ctx_t;
-@@ -150,6 +153,13 @@
-       offsetof(ngx_http_xslt_filter_loc_conf_t, types_keys),
-       &ngx_http_xslt_default_types[0] },
+@@ -159,6 +162,13 @@ static ngx_command_t  ngx_http_xslt_filter_commands[] = {
+       offsetof(ngx_http_xslt_filter_loc_conf_t, last_modified),
+       NULL },
  
 +    { ngx_string("xslt_html_parser"),
 +      NGX_HTTP_LOC_CONF|NGX_CONF_FLAG,
@@ -39,7 +40,7 @@ diff -r 50f065641b4c src/http/modules/ngx_http_xslt_filter_module.c
        ngx_null_command
  };
  
-@@ -225,6 +235,8 @@
+@@ -234,6 +244,8 @@ ngx_http_xslt_header_filter(ngx_http_request_t *r)
  
      r->main_filter_need_in_memory = 1;
  
@@ -48,7 +49,7 @@ diff -r 50f065641b4c src/http/modules/ngx_http_xslt_filter_module.c
      return NGX_OK;
  }
  
-@@ -261,24 +273,39 @@
+@@ -270,24 +282,39 @@ ngx_http_xslt_body_filter(ngx_http_request_t *r, ngx_chain_t *in)
                  xmlFreeDoc(ctx->ctxt->myDoc);
              }
  
@@ -92,7 +93,7 @@ diff -r 50f065641b4c src/http/modules/ngx_http_xslt_filter_module.c
                  return ngx_http_xslt_send(r, ctx,
                                         ngx_http_xslt_apply_stylesheet(r, ctx));
              }
-@@ -353,22 +380,51 @@
+@@ -368,22 +395,51 @@ ngx_http_xslt_add_chunk(ngx_http_request_t *r, ngx_http_xslt_filter_ctx_t *ctx,
      ngx_buf_t *b)
  {
      int               err;
@@ -154,7 +155,7 @@ diff -r 50f065641b4c src/http/modules/ngx_http_xslt_filter_module.c
          ctxt->sax->fatalError = ngx_http_xslt_sax_error;
          ctxt->sax->_private = ctx;
  
-@@ -376,10 +432,15 @@
+@@ -391,10 +447,15 @@ ngx_http_xslt_add_chunk(ngx_http_request_t *r, ngx_http_xslt_filter_ctx_t *ctx,
          ctx->request = r;
      }
  
@@ -171,7 +172,7 @@ diff -r 50f065641b4c src/http/modules/ngx_http_xslt_filter_module.c
          b->pos = b->last;
          return NGX_OK;
      }
-@@ -464,6 +525,8 @@
+@@ -479,6 +540,8 @@ ngx_http_xslt_sax_error(void *data, const char *msg, ...)
  
      ngx_log_error(NGX_LOG_ERR, ctx->request->connection->log, 0,
                    "libxml2 error: \"%*s\"", n + 1, buf);
@@ -180,18 +181,18 @@ diff -r 50f065641b4c src/http/modules/ngx_http_xslt_filter_module.c
  }
  
  
-@@ -1058,6 +1121,8 @@
-      *     conf->params = NULL;
-      */
+@@ -1075,6 +1138,8 @@ ngx_http_xslt_filter_create_conf(ngx_conf_t *cf)
+ 
+     conf->last_modified = NGX_CONF_UNSET;
  
 +    conf->html_parser = NGX_CONF_UNSET;
 +
      return conf;
  }
  
-@@ -1088,6 +1153,8 @@
-         return NGX_CONF_ERROR;
-     }
+@@ -1107,6 +1172,8 @@ ngx_http_xslt_filter_merge_conf(ngx_conf_t *cf, void *parent, void *child)
+ 
+     ngx_conf_merge_value(conf->last_modified, prev->last_modified, 0);
  
 +    ngx_conf_merge_value(conf->html_parser, prev->html_parser, 0);
 +
