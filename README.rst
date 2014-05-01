@@ -1,6 +1,11 @@
 About this Nginx
 ================
 
+.. important::
+   This Nginx build currently supports version 1.6.  Please see the
+   tags within this repository for previously supported versions
+   (``1.4.x``).
+
 This version of Nginx is customised in a number of different ways:
 
 * *New*: adds LDAP authentication for Nginx using `nginx-ldap-auth
