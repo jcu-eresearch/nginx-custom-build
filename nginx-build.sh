@@ -1,5 +1,8 @@
 #!/bin/sh
 
+#Clean up old nginx builds
+sudo rm -rf ~/rpmbuild/RPMS/*/nginx-*.rpm
+
 #Install required packages for building
 sudo yum install -y \
 	rpm-build \
@@ -30,7 +33,7 @@ pushd ~/rpmbuild/SOURCES
 git clone https://github.com/agentzh/headers-more-nginx-module.git -b v0.25
 
 #Fancy Index module
-git clone https://github.com/aperezdc/ngx-fancyindex.git
+git clone https://github.com/aperezdc/ngx-fancyindex.git -b v0.3.4
 
 #AJP module
 git clone https://github.com/yaoweibin/nginx_ajp_module.git -b v0.3.0
