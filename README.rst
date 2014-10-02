@@ -46,6 +46,68 @@ from this repository in your ``~/rpmbuild/SPECS`` directory.
 This Vagrant configuration will always build the **latest stable** version
 of Nginx.
 
+
+Testing and debugging the Authorizer patch
+==========================================
+
+The following Nginx configuration is best placed in your ``/etc/nginx/nginx.conf``
+file, replacing anything that's already there.  The configuration configures
+Nginx for debugging, and when ``nginx.debug`` (from the ``nginx-debug`` package
+I/you have built) is run, will cascade all debug messages into the console.
+
+If you're specifically interested in the authorizer module, watch the output
+for comments consisting of ``auth request authorizer`` (and ``auth request``
+in general.  Using the configuration below, you can make a simple request 
+to make the auth request authorizer work::
+
+    curl -i http://localhost/
+
+```
+worker_processes 1;
+daemon off;
+master_process off;
+error_log stderr debug;
+
+events {
+    worker_connections 1024;
+}
+
+server {
+            listen 80 default_server;
+ 
+            location / {
+               # Swap these lines around to test.
+                auth_request /noauth authorizer=on;
+                #auth_request /noauth-redir authorizer=on;
+                #auth_request /auth authorizer=on;
+            }
+            location /auth {
+                more_set_headers "Variable-Email: david@example.org";
+                more_set_headers "Variable-Cn: davidjb";
+                return 200 'Authenticated';
+            }
+            location /noauth {
+                return 401 'Not authenticated';
+            }
+            location /noauth-redir {
+                return 301 http://davidjb.com;
+            }
+}
+```
+
+Tests
+-----
+
+#. With the ``/noauth`` line used, a 401 **must** be returned.
+#. With the ``/noauth-dir`` line used, the correct 301 **must** be returned.
+#. With the final ``/auth`` line used, a 404 will correctly result.
+   Check the console output from ``nginx.debug`` and make sure you see lines
+   stating ``auth request authorizer copied header:``.
+   
+If any of the above don't behave exactly like this, the patch probably needs
+to be updated!
+
+
 Credits
 =======
 
