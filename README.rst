@@ -62,7 +62,8 @@ to make the auth request authorizer work::
 
     curl -i http://localhost/
 
-::
+``nginx.conf``::
+
    worker_processes 1;
    daemon off;
    master_process off;
