@@ -62,38 +62,38 @@ to make the auth request authorizer work::
 
     curl -i http://localhost/
 
-```
-worker_processes 1;
-daemon off;
-master_process off;
-error_log stderr debug;
-
-events {
-    worker_connections 1024;
-}
-
-server {
-            listen 80 default_server;
- 
-            location / {
-               # Swap these lines around to test.
-                auth_request /noauth authorizer=on;
-                #auth_request /noauth-redir authorizer=on;
-                #auth_request /auth authorizer=on;
-            }
-            location /auth {
-                more_set_headers "Variable-Email: david@example.org";
-                more_set_headers "Variable-Cn: davidjb";
-                return 200 'Authenticated';
-            }
-            location /noauth {
-                return 401 'Not authenticated';
-            }
-            location /noauth-redir {
-                return 301 http://davidjb.com;
-            }
-}
-```
+::
+   worker_processes 1;
+   daemon off;
+   master_process off;
+   error_log stderr debug;
+   
+   events {
+       worker_connections 1024;
+   }
+   
+   server {
+               listen 80 default_server;
+    
+               location / {
+                  # Swap these lines around to test.
+                   auth_request /noauth authorizer=on;
+                   #auth_request /noauth-redir authorizer=on;
+                   #auth_request /auth authorizer=on;
+               }
+               location /auth {
+                   more_set_headers "Variable-Email: david@example.org";
+                   more_set_headers "Variable-Cn: davidjb";
+                   return 200 'Authenticated';
+               }
+               location /noauth {
+                   return 401 'Not authenticated';
+               }
+               location /noauth-redir {
+                   return 301 http://davidjb.com;
+               }
+   }
+   
 
 Tests
 -----
