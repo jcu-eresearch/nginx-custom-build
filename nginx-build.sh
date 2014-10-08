@@ -39,7 +39,7 @@ git clone https://github.com/aperezdc/ngx-fancyindex.git -b v0.3.4
 git clone https://github.com/yaoweibin/nginx_ajp_module.git -b v0.3.0
 
 #LDAP authentication module
-git clone https://github.com/davidjb/nginx-auth-ldap.git
+git clone https://github.com/kvspb/nginx-auth-ldap.git
 
 popd
 
