@@ -6,11 +6,7 @@ Vagrant.configure("2") do |config|
   config.vm.box     = "centos-65-x64-vbox436"
   config.vm.box_url = "http://puppet-vagrant-boxes.puppetlabs.com/centos-65-x64-virtualbox-puppet.box"
 
-  #config.vm.network :forwarded_port, guest: 80, host: 80
-
-  # WARNING: only enable when the VM is patched and/or SSH disabled
-  # Vagrantboxes are completely insecure.
-  #config.vm.network :public_network
+  config.vm.network :private_network, ip: "33.33.33.10"
 
   #Build the custom version of Nginx 
   config.vm.provision :shell, :path => "nginx-build.sh"
