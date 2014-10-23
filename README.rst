@@ -8,6 +8,7 @@ About this Nginx
 
 This version of Nginx is customised in a number of different ways:
 
+* Has SPDY support built (depends on OpenSSL 1.0.1 being installed)
 * Adds LDAP authentication for Nginx using `nginx-ldap-auth
   <https://github.com/kvspb/nginx-auth-ldap>`_.
 * Has custom HTML XSLT transformation built in. This allows 
@@ -19,7 +20,6 @@ This version of Nginx is customised in a number of different ways:
 * Has the ``ngx-fancyindex`` module for folder listings.
 * Has the ``ngx_ajp_module`` module for talking to AJP backends.
 * Has XLST support built.
-* Has SPDY support built (depends on OpenSSL 1.0.1e being installed). TBA.
 
 See the build script for details of where these dependencies live.
 
