@@ -64,7 +64,10 @@ to make the auth request authorizer work::
 Using the configuration below, this would result in a ``401 Not Authorized``
 response, which is correct.
 
-``nginx.conf``::
+``nginx.conf``, which causes Nginx to run in debug mode (start Nginx with
+``nginx -c /path/to/nginx.conf``).  Ensure that your version of Nginx was
+built with debugging symbols; if you've installed via Yum/RPM, then you can
+install ``nginx.debug`` and use that executable instead::
 
    worker_processes 1;
    daemon off;
