@@ -59,9 +59,10 @@ for comments consisting of ``auth request authorizer`` (and ``auth request``
 in general.  Using the configuration below, you can make a simple request 
 to make the auth request authorizer work::
 
-    curl -i http://localhost/
+    curl -i http://localhost/test1
 
-``nginx.conf``::
+Using the configuration below, this would result in a ``401 Not Authorized``
+response, which is correct.
 
    worker_processes 1;
    daemon off;
