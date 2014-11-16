@@ -75,22 +75,38 @@ to make the auth request authorizer work::
    server {
                listen 80 default_server;
     
-               location / {
-                  # Swap these lines around to test.
+               # 401 must be returned
+               location /test1 {
                    auth_request /noauth authorizer=on;
-                   #auth_request /noauth-redir authorizer=on;
-                   #auth_request /auth authorizer=on;
                }
-               location /auth {
-                   more_set_headers "Variable-Email: david@example.org";
-                   more_set_headers "Variable-Cn: davidjb";
-                   return 200 'Authenticated';
+               
+               # 301 must be returned
+               location /test2 {
+                   auth_request /noauth-redir authorizer=on;
                }
+               
+               # 404 must be returned; a 200 here is incorrect
+               # Check the console output from ``nginx.debug`` ensure lines
+               # stating ``auth request authorizer copied header:`` are present.
+               location /test3 {
+                   auth_request /auth authorizer=on;
+               }
+               
+               # Mock backend authentication endpoints, simulating shibauthorizer
                location /noauth {
+                   internal;
                    return 401 'Not authenticated';
                }
                location /noauth-redir {
+                   internal;
                    return 301 http://davidjb.com;
+               }
+               
+               location /auth {
+                   internal;
+                   more_set_headers "Variable-Email: david@example.org";
+                   more_set_headers "Variable-Cn: davidjb";
+                   return 200 'Authenticated';
                }
    }
    
@@ -98,14 +114,14 @@ to make the auth request authorizer work::
 Tests
 -----
 
-#. With the ``/noauth`` line used, a 401 **must** be returned.
-#. With the ``/noauth-dir`` line used, the correct 301 **must** be returned.
-#. With the final ``/auth`` line used, a 404 will correctly result.
-   Check the console output from ``nginx.debug`` and make sure you see lines
-   stating ``auth request authorizer copied header:``.
+Run the following::
+
+   curl -i http://localhost/test{1,2,3}
    
-If any of the above don't behave exactly like this, the patch probably needs
-to be updated!
+and compare the request results with the comments in the configuration above.
+If any of the above don't behave exactly as specified this, the patch either didn't
+apply correctly or may need to be updated.  If you find this, report an issue to
+this repository, describing your Nginx version, platform, and other details.
 
 
 Credits
