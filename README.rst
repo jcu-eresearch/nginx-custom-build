@@ -64,6 +64,8 @@ to make the auth request authorizer work::
 Using the configuration below, this would result in a ``401 Not Authorized``
 response, which is correct.
 
+``nginx.conf``::
+
    worker_processes 1;
    daemon off;
    master_process off;
