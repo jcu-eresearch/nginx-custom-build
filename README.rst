@@ -49,8 +49,8 @@ This Vagrant configuration will always build the **latest stable** version
 of Nginx.
 
 
-Testing and debugging the Authorizer patch
-==========================================
+Testing and debugging nginx-http-shibboleth
+===========================================
 
 The following Nginx configuration is best placed in your ``/etc/nginx/nginx.conf``
 file, replacing anything that's already there.  The configuration configures
