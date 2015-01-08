@@ -5,12 +5,12 @@ sudo rm -rf ~/rpmbuild/RPMS/*/nginx-*.rpm
 
 #Install required packages for building
 sudo yum install -y \
-	rpm-build \
+    rpm-build \
     rpmdevtools \
-	yum-utils \
-	mercurial \
-	git \
-	wget
+    yum-utils \
+    mercurial \
+    git \
+    wget
 
 
 #Install source RPM for Nginx
@@ -41,6 +41,9 @@ git clone https://github.com/yaoweibin/nginx_ajp_module.git -b v0.3.0
 #LDAP authentication module
 git clone https://github.com/kvspb/nginx-auth-ldap.git
 
+#Shibboleth module
+git clone https://github.com/nginx-shib/nginx-http-shibboleth.git
+
 popd
 
 #Prep and patch the Nginx specfile for the RPMs
@@ -49,7 +52,6 @@ popd
 pushd ~/rpmbuild/SPECS
 if [ -d "/vagrant" ]; then
     cp /vagrant/nginx-eresearch.patch ~/rpmbuild/SPECS/
-    cp /vagrant/nginx-auth-request-module.patch ~/rpmbuild/SOURCES/
     cp /vagrant/nginx-xslt-html-parser.patch ~/rpmbuild/SOURCES/
 fi
 patch -p1 < nginx-eresearch.patch

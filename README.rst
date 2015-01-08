@@ -8,15 +8,14 @@ About this Nginx
 
 This version of Nginx is customised in a number of different ways:
 
+* Has the ``nginx-http-shibboleth`` module for integrating
+  Shibboleth authentication with applications served via Nginx.
 * Has SPDY support built (depends on OpenSSL 1.0.1 being installed)
 * Adds LDAP authentication for Nginx using `nginx-ldap-auth
   <https://github.com/kvspb/nginx-auth-ldap>`_.
 * Has custom HTML XSLT transformation built in. This allows 
   transformation of HTML documents on-the-fly via XSL (eg that which
   comes from `Diazo <http://diazo.org>`_ for theming).
-* Has a custom version of ``ngx_http_auth_request_module`` that supports 
-  a flavour of FastCGI "authorizer" that passes authorizer headers to
-  as incoming headers to an upstream backend (proxy, uWGSI, FastCGI, etc).
 * Has the ``ngx-fancyindex`` module for folder listings.
 * Has the ``ngx_ajp_module`` module for talking to AJP backends.
 * Has XLST support built.
@@ -61,61 +60,15 @@ to make the auth request authorizer work::
 
     curl -i http://localhost/test1
 
-Using the configuration below, this would result in a ``401 Not Authorized``
-response, which is correct.
-
-``nginx.conf``, which causes Nginx to run in debug mode (start Nginx with
+Using the configuration `provided
+<https://github.com/jcu-eresearch/nginx-custom-build/blob/master/nginx.conf>`_,
+this would result in a ``401 Not Authorized`` response, which is correct.
+This ``nginx.conf`` causes Nginx to run in debug mode (start Nginx with
 ``nginx -c /path/to/nginx.conf``).  Ensure that your version of Nginx was
-built with debugging symbols; if you've installed via Yum/RPM, then you can
-install ``nginx.debug`` and use that executable instead::
+built with debugging symbols; if you've installed via YUM/RPM, then you can
+install ``nginx.debug`` and use that executable instead.
 
-   worker_processes 1;
-   daemon off;
-   master_process off;
-   error_log stderr debug;
-   
-   events {
-       worker_connections 1024;
-   }
-   
-   server {
-               listen 80 default_server;
-    
-               # 401 must be returned
-               location /test1 {
-                   auth_request /noauth authorizer=on;
-               }
-               
-               # 301 must be returned
-               location /test2 {
-                   auth_request /noauth-redir authorizer=on;
-               }
-               
-               # 404 must be returned; a 200 here is incorrect
-               # Check the console output from ``nginx.debug`` ensure lines
-               # stating ``auth request authorizer copied header:`` are present.
-               location /test3 {
-                   auth_request /auth authorizer=on;
-               }
-               
-               # Mock backend authentication endpoints, simulating shibauthorizer
-               location /noauth {
-                   internal;
-                   return 401 'Not authenticated';
-               }
-               location /noauth-redir {
-                   internal;
-                   return 301 http://davidjb.com;
-               }
-               
-               location /auth {
-                   internal;
-                   more_set_headers "Variable-Email: david@example.org";
-                   more_set_headers "Variable-Cn: davidjb";
-                   return 200 'Authenticated';
-               }
-   }
-   
+
 
 Tests
 -----
@@ -123,16 +76,20 @@ Tests
 Run the following::
 
    curl -i http://localhost/test{1,2,3}
-   
+
 and compare the request results with the comments in the configuration above.
-If any of the above don't behave exactly as specified this, the patch either didn't
-apply correctly or may need to be updated.  If you find this, report an issue to
-this repository, describing your Nginx version, platform, and other details.
+If any of the above don't behave exactly as specified this, the Shibboleth
+module may need to be updated.  If you find this, report an issue over at
+https://github.com/nginx-shib/nginx-http-shibboleth.
+
+If you think you've encounted a problem with the interaction with this specific
+Nginx build, then report an issue to this repository.  Thanks!
 
 
 Credits
 =======
 
+* Thanks to `Luca Bruno <https://github.com/lucab>`_ for taking my Shibboleth
+  work and creating a full Nginx module.
 * Thanks to Laurence Rowe for the patches for making HTML transformations
   possible at https://bitbucket.org/lrowe/nginx-xslt-html-parser
-

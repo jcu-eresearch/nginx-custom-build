@@ -1,6 +1,15 @@
 Changes
 =======
 
+1.6.2-1 (2015-01-08)
+--------------------
+
+* **Backwards incompatibility**: replace patched auth request module with
+  Shibboleth module for Nginx
+  (https://github.com/nginx-shib/nginx-http-shibboleth).  Nginx configurations
+  must be adjusted to suit this new version!
+* Update to Nginx 1.6.2-2.
+
 1.6.0-1 (2014-04-30)
 --------------------
 

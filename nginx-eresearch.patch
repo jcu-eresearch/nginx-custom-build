@@ -1,17 +1,21 @@
 diff --git a/nginx.spec b/nginx.spec
-index 513ddff..f3e3f5a 100644
+index e829ec7..8d4aebb 100644
 --- a/nginx.spec
 +++ b/nginx.spec
-@@ -43,7 +43,7 @@ Requires(pre): pwdutils
+@@ -44,10 +44,10 @@ Requires(pre): pwdutils
  
  # end of distribution specific definitions
  
 -Summary: High performance web server
-+Summary: High performance web server (Built with LDAP, XSLT, XSLT HTML Parser, and Auth Request modules)
++Summary: High performance web server (Built with LDAP, XSLT, XSLT HTML Parser, and Shibboleth module)
  Name: nginx
- Version: 1.6.0
- Release: 1%{?dist}.ngx
-@@ -60,12 +60,21 @@ Source6: nginx.vh.example_ssl.conf
+ Version: 1.6.2
+-Release: 1%{?dist}.ngx
++Release: 2%{?dist}.ngx
+ Vendor: nginx inc.
+ URL: http://nginx.org/
+ 
+@@ -61,12 +61,21 @@ Source6: nginx.vh.example_ssl.conf
  Source7: nginx.suse.init
  Source8: nginx.service
  Source9: nginx.upgrade.sh
@@ -19,8 +23,8 @@ index 513ddff..f3e3f5a 100644
 +Source11: ngx-fancyindex
 +Source12: nginx_ajp_module
 +Source13: nginx-xslt-html-parser.patch
-+Source14: nginx-auth-ldap 
-+Source15: nginx-auth-request-module.patch
++Source14: nginx-auth-ldap
++Source15: nginx-http-shibboleth
  
  License: 2-clause BSD-like license
  
@@ -33,20 +37,20 @@ index 513ddff..f3e3f5a 100644
  
  Provides: webserver
  
-@@ -82,6 +91,12 @@ Not stripped version of nginx built with the debugging log support.
+@@ -83,6 +92,12 @@ Not stripped version of nginx built with the debugging log support.
  
  %prep
  %setup -q
-+cp -R -p %SOURCE10 . 
++cp -R -p %SOURCE10 .
 +cp -R -p %SOURCE11 .
 +cp -R -p %SOURCE12 .
 +patch -p1 < %SOURCE13
 +cp -R -p %SOURCE14 .
-+patch -p1 < %SOURCE15
++cp -R -p %SOURCE15 .
  
  %build
  ./configure \
-@@ -119,6 +134,12 @@ Not stripped version of nginx built with the debugging log support.
+@@ -120,6 +135,13 @@ Not stripped version of nginx built with the debugging log support.
          --with-debug \
          %{?with_spdy:--with-http_spdy_module} \
          --with-cc-opt="%{optflags} $(pcre-config --cflags)" \
@@ -56,10 +60,11 @@ index 513ddff..f3e3f5a 100644
 +        --add-module=%{_builddir}/%{name}-%{version}/nginx_ajp_module \
 +        --add-module=%{_builddir}/%{name}-%{version}/headers-more-nginx-module \
 +        --add-module=%{_builddir}/%{name}-%{version}/nginx-auth-ldap \
++        --add-module=%{_builddir}/%{name}-%{version}/nginx-http-shibboleth \
          $*
  make %{?_smp_mflags}
  %{__mv} %{_builddir}/%{name}-%{version}/objs/nginx \
-@@ -157,6 +178,12 @@ make %{?_smp_mflags}
+@@ -158,6 +180,13 @@ make %{?_smp_mflags}
          --with-ipv6 \
          %{?with_spdy:--with-http_spdy_module} \
          --with-cc-opt="%{optflags} $(pcre-config --cflags)" \
@@ -69,6 +74,7 @@ index 513ddff..f3e3f5a 100644
 +        --add-module=%{_builddir}/%{name}-%{version}/nginx_ajp_module \
 +        --add-module=%{_builddir}/%{name}-%{version}/headers-more-nginx-module \
 +        --add-module=%{_builddir}/%{name}-%{version}/nginx-auth-ldap \
++        --add-module=%{_builddir}/%{name}-%{version}/nginx-http-shibboleth \
          $*
  make %{?_smp_mflags}
  
