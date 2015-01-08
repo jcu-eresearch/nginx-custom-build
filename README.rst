@@ -8,7 +8,11 @@ About this Nginx
 
 This version of Nginx is customised in a number of different ways:
 
-* Has the ``nginx-http-shibboleth`` module for integrating
+* Adds support for Shibboleth authentication for applications served
+  by Nginx using the `nginx-http-shibboleth
+  <https://github.com/nginx-shib/nginx-http-shibboleth>`_ module. This
+  requires a Shibboleth SP built with FastCGI support and correctly
+  configured.
   Shibboleth authentication with applications served via Nginx.
 * Has SPDY support built (depends on OpenSSL 1.0.1 being installed)
 * Adds LDAP authentication for Nginx using `nginx-ldap-auth
