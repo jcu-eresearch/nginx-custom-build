@@ -52,26 +52,23 @@ of Nginx.
 Testing and debugging nginx-http-shibboleth
 ===========================================
 
-The following Nginx configuration is best placed in your ``/etc/nginx/nginx.conf``
-file, replacing anything that's already there.  The configuration configures
-Nginx for debugging, and when ``nginx.debug`` (from the ``nginx-debug`` package
-I/you have built) is run, will cascade all debug messages into the console.
+Use the configuration `provided
+<https://github.com/jcu-eresearch/nginx-custom-build/blob/master/nginx.conf>`_,
+as your ``/etc/nginx/nginx.conf`` file, replacing anything that's already there.
+The configuration configures Nginx for debugging, and when ``nginx.debug`` 
+(from the ``nginx-debug`` package) is run, will cascade all debug messages 
+into the console.
 
-If you're specifically interested in the authorizer module, watch the output
-for comments consisting of ``auth request authorizer`` (and ``auth request``
+If you're specifically interested in the Shibboleth module, watch the output
+for comments consisting of ``shib request authorizer`` (and ``shib request``
 in general.  Using the configuration below, you can make a simple request 
-to make the auth request authorizer work::
+to make the Shib request authorizer work::
 
     curl -i http://localhost/test1
 
 Using the configuration `provided
 <https://github.com/jcu-eresearch/nginx-custom-build/blob/master/nginx.conf>`_,
-this would result in a ``401 Not Authorized`` response, which is correct.
-This ``nginx.conf`` causes Nginx to run in debug mode (start Nginx with
-``nginx -c /path/to/nginx.conf``).  Ensure that your version of Nginx was
-built with debugging symbols; if you've installed via YUM/RPM, then you can
-install ``nginx.debug`` and use that executable instead.
-
+must result in a ``401 Not Authorized`` response, which is correct.
 
 
 Tests
