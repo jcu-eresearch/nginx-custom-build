@@ -4,25 +4,26 @@
 sudo rm -rf ~/rpmbuild/RPMS/*/nginx-*.rpm
 
 #Install required packages for building
-sudo yum install -y \
-    rpm-build \
-    rpmdevtools \
-    yum-utils \
-    mercurial \
-    git \
-    wget
+#sudo yum install -y \
+#    rpm-build \
+#    rpmdevtools \
+#    yum-utils \
+#    mercurial \
+#    git \
+#    wget
 
 
 #Install source RPM for Nginx
 pushd ~
-echo """[nginx]
-name=nginx repo
-baseurl=http://nginx.org/packages/centos/6/SRPMS/
-gpgcheck=0
-enabled=1""" >> nginx.repo
-sudo cp nginx.repo /etc/yum.repos.d/
-yumdownloader --source nginx
-sudo rpm -ihv nginx*.src.rpm
+#echo """[nginx]
+#name=nginx repo
+#baseurl=http://nginx.org/packages/centos/6/SRPMS/
+#gpgcheck=0
+#enabled=1""" >> nginx.repo
+#sudo cp nginx.repo /etc/yum.repos.d/
+#yumdownloader --source nginx
+rpm -ivh http://nginx.org/packages/centos/6/SRPMS/nginx-1.6.2-1.el6.ngx.src.rpm
+#sudo rpm -ihv nginx*.src.rpm
 popd
 
 
@@ -56,10 +57,10 @@ if [ -d "/vagrant" ]; then
 fi
 patch -p1 < nginx-eresearch.patch
 spectool -g -R nginx.spec
-yum-builddep -y nginx.spec
+#yum-builddep -y nginx.spec
 rpmbuild -ba nginx.spec
 
 #Test installation and check output
-sudo yum remove -y nginx nginx-devel
-sudo yum install -y ~/rpmbuild/RPMS/*/nginx-*.rpm
-nginx -V
+#sudo yum remove -y nginx nginx-devel
+#sudo yum install -y ~/rpmbuild/RPMS/*/nginx-*.rpm
+#nginx -V
