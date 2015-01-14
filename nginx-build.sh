@@ -52,7 +52,7 @@ popd
 #Prep and patch the Nginx specfile for the RPMs
 #Note: expects to have the repository contents located in ~/rpmbuild/SPECS/
 #      or located at /vagrant 
-cp /nginx-eresearch.patch dist/SPECS
+cp ./nginx-eresearch.patch dist/SPECS
 pushd ./dist/SPECS
 if [ -d "/vagrant" ]; then
     cp /vagrant/nginx-eresearch.patch ~/rpmbuild/SPECS/
