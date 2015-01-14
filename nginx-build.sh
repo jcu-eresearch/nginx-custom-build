@@ -52,15 +52,17 @@ popd
 #Prep and patch the Nginx specfile for the RPMs
 #Note: expects to have the repository contents located in ~/rpmbuild/SPECS/
 #      or located at /vagrant 
+cp /nginx-eresearch.patch dist/SPECS
 pushd ./dist/SPECS
 if [ -d "/vagrant" ]; then
     cp /vagrant/nginx-eresearch.patch ~/rpmbuild/SPECS/
     cp /vagrant/nginx-xslt-html-parser.patch ~/rpmbuild/SOURCES/
 fi
-cp ~/nginx-eresearch.patch .
+
 patch -p1 < nginx-eresearch.patch
 spectool -g -R nginx.spec
 #yum-builddep -y nginx.spec
+popd
 rpmbuild -ba --define "_topdir $(pwd)/dist" --define "buildroot $(pwd)/dist/install" --clean nginx.spec
 
 #Test installation and check output
