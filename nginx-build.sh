@@ -57,10 +57,11 @@ if [ -d "/vagrant" ]; then
     cp /vagrant/nginx-eresearch.patch ~/rpmbuild/SPECS/
     cp /vagrant/nginx-xslt-html-parser.patch ~/rpmbuild/SOURCES/
 fi
+cp ~/nginx-eresearch.patch .
 patch -p1 < nginx-eresearch.patch
 spectool -g -R nginx.spec
 #yum-builddep -y nginx.spec
-rpmbuild -ba --define "_topdir $(PWD)/dist" --define "buildroot $(PWD)/dist/install" --clean nginx.spec
+rpmbuild -ba --define "_topdir $(pwd)/dist" --define "buildroot $(pwd)/dist/install" --clean nginx.spec
 
 #Test installation and check output
 #sudo yum remove -y nginx nginx-devel
