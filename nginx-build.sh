@@ -28,7 +28,7 @@ popd
 
 
 #Get various add-on modules for Nginx
-pushd ~/rpmbuild/SOURCES
+pushd ./dist/SOURCES
 
 #Headers More module
 git clone https://github.com/agentzh/headers-more-nginx-module.git -b v0.25
@@ -50,7 +50,7 @@ popd
 #Prep and patch the Nginx specfile for the RPMs
 #Note: expects to have the repository contents located in ~/rpmbuild/SPECS/
 #      or located at /vagrant 
-pushd ~/rpmbuild/SPECS
+pushd ./dist/SPECS
 if [ -d "/vagrant" ]; then
     cp /vagrant/nginx-eresearch.patch ~/rpmbuild/SPECS/
     cp /vagrant/nginx-xslt-html-parser.patch ~/rpmbuild/SOURCES/
@@ -58,7 +58,7 @@ fi
 patch -p1 < nginx-eresearch.patch
 spectool -g -R nginx.spec
 #yum-builddep -y nginx.spec
-rpmbuild -ba nginx.spec
+rpmbuild -ba --define "_topdir $(PWD)/dist" --define "buildroot $(PWD)/dist/install" --clean nginx.spec
 
 #Test installation and check output
 #sudo yum remove -y nginx nginx-devel
