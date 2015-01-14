@@ -1,7 +1,7 @@
 #!/bin/sh
 
 #Clean up old nginx builds
-sudo rm -rf ~/rpmbuild/RPMS/*/nginx-*.rpm
+rm -rf ~/rpmbuild/RPMS/*/nginx-*.rpm
 
 #Install required packages for building
 #sudo yum install -y \
