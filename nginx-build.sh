@@ -23,6 +23,8 @@ pushd ~
 #sudo cp nginx.repo /etc/yum.repos.d/
 #yumdownloader --source nginx
 rpm -ivh http://nginx.org/packages/centos/6/SRPMS/nginx-1.6.2-1.el6.ngx.src.rpm
+mv ~/rpmbuild ./dist
+mkdir -p dist/{BUILD,RPMS,SPECS,SOURCES,SRPMS,install}
 #sudo rpm -ihv nginx*.src.rpm
 popd
 
