@@ -11,7 +11,7 @@ index e829ec7..8d4aebb 100644
  Name: nginx
  Version: 1.6.2
 -Release: 1%{?dist}.ngx
-+Release: 2%{?dist}.ngx
++Release: 2%{?dist}.gd.ngx
  Vendor: nginx inc.
  URL: http://nginx.org/
  
