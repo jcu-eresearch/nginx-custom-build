@@ -107,6 +107,15 @@ cp -R -p %SOURCE12 .
 patch -p1 < %SOURCE13
 cp -R -p %SOURCE14 .
 cp -R -p %SOURCE15 .
+cp -R -p %SOURCE16 .
+cp -R -p %SOURCE17 .
+cp -R -p %SOURCE18 .
+cp -R -p %SOURCE19 .
+cp -R -p %SOURCE20 .
+cp -R -p %SOURCE21 .
+cp -R -p %SOURCE22 .
+cp -R -p %SOURCE23 .
+cp -R -p %SOURCE24 .
 
 %build
 ./configure \
