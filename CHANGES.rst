@@ -1,6 +1,12 @@
 Changes
 =======
 
+1.6.3-1 (2015-04-09)
+--------------------
+
+* Update for Nginx 1.6.3.  Change the way we patch the spec file to avoid
+  continuous patch clashes with upstream adding extra SOURCEs.
+
 1.6.2-1 (2015-01-08)
 --------------------
 
