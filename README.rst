@@ -40,10 +40,10 @@ Building Nginx
 
 #. Enjoy your new RPMs, available in the current directory.
 
-If you're not into Vagrant, then you can manually run 
+If you're not into Vagrant, then you can manually run
 https://github.com/jcu-eresearch/nginx-custom-build/blob/master/nginx-build.sh
-on your own EL 6 machine, ensuring that you have the ``*.patch`` files
-from this repository in your ``~/rpmbuild/SPECS`` directory.
+on your own EL 6 machine.  The script will automatically clone the latest
+patches from this GitHub repository.
 
 This Vagrant configuration will always build the **latest stable** version
 of Nginx.

@@ -20,7 +20,7 @@ name=nginx repo
 baseurl=http://nginx.org/packages/centos/6/SRPMS/
 gpgcheck=0
 enabled=1""" >> nginx.repo
-sudo cp nginx.repo /etc/yum.repos.d/
+sudo mv nginx.repo /etc/yum.repos.d/
 yumdownloader --source nginx
 sudo rpm -ihv nginx*.src.rpm
 popd
@@ -46,14 +46,23 @@ git clone https://github.com/nginx-shib/nginx-http-shibboleth.git
 
 popd
 
-#Prep and patch the Nginx specfile for the RPMs
-#Note: expects to have the repository contents located in ~/rpmbuild/SPECS/
-#      or located at /vagrant 
-pushd ~/rpmbuild/SPECS
-if [ -d "/vagrant" ]; then
-    cp /vagrant/nginx-eresearch.patch ~/rpmbuild/SPECS/
-    cp /vagrant/nginx-xslt-html-parser.patch ~/rpmbuild/SOURCES/
+# Obtain a location for the patches, either from /vagrant
+# or cloned from GitHub (if run stand-alone).
+if [ -d '/vagrant' ]; then
+    patch_dir='/vagrant'
+else
+    patch_dir=`mktemp`
+    git clone https://github.com/jcu-eresearch/nginx-custom-build.git $patch_dir
 fi
+cp $patch_dir/nginx-eresearch.patch ~/rpmbuild/SPECS/
+cp $patch_dir/nginx-xslt-html-parser.patch ~/rpmbuild/SOURCES/
+# Remove temp directory if not Vagrant
+if ! [ -d '/vagrant' ]; then
+    rm -rf $patch_dir
+fi
+
+#Prep and patch the Nginx specfile for the RPMs
+pushd ~/rpmbuild/SPECS
 patch -p1 < nginx-eresearch.patch
 spectool -g -R nginx.spec
 yum-builddep -y nginx.spec
