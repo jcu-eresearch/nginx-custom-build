@@ -69,6 +69,6 @@ yum-builddep -y nginx.spec
 rpmbuild -ba nginx.spec
 
 #Test installation and check output
-sudo yum remove -y nginx nginx-devel
+sudo yum remove -y nginx nginx-debug
 sudo yum install -y ~/rpmbuild/RPMS/*/nginx-*.rpm
 nginx -V
