@@ -13,7 +13,7 @@ Vagrant.configure("2") do |config|
   config.vm.provision :shell, :path => "copy-rpms-out.sh"
 
   config.vm.provider :virtualbox do |vb|
-    vb.name = "nginx-custom-build"
+    vb.name = "vagrant-nginx-custom-build"
     vb.customize ["modifyvm", :id, "--cpus", "1"]
     vb.customize ["modifyvm", :id, "--memory", "2048"]
   end
