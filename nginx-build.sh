@@ -64,14 +64,14 @@ popd
 if [ -d '/vagrant' ]; then
     patch_dir='/vagrant'
 else
-    patch_dir=`mktemp`
-    git clone https://github.com/jcu-eresearch/nginx-custom-build.git $patch_dir
+    patch_dir=$(mktemp)
+    git clone https://github.com/jcu-eresearch/nginx-custom-build.git "$patch_dir"
 fi
-cp $patch_dir/nginx-eresearch.patch ~/rpmbuild/SPECS/
-cp $patch_dir/nginx-xslt-html-parser.patch ~/rpmbuild/SOURCES/
+cp "$patch_dir/nginx-eresearch.patch" ~/rpmbuild/SPECS/
+cp "$patch_dir/nginx-xslt-html-parser.patch" ~/rpmbuild/SOURCES/
 # Remove temp directory if not Vagrant
 if ! [ -d '/vagrant' ]; then
-    rm -rf $patch_dir
+    rm -rf "$patch_dir"
 fi
 
 #Prep and patch the Nginx specfile for the RPMs
