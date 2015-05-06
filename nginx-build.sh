@@ -19,7 +19,7 @@ echo """[nginx]
 name=nginx repo
 baseurl=http://nginx.org/packages/centos/6/SRPMS/
 gpgcheck=0
-enabled=1""" >> nginx.repo
+enabled=1""" > nginx.repo
 sudo mv nginx.repo /etc/yum.repos.d/
 yumdownloader --source nginx
 sudo rpm -ihv nginx*.src.rpm
