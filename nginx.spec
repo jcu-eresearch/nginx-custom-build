@@ -77,6 +77,7 @@ Source22: ngx_devel_kit
 Source23: set-misc-nginx-module
 Source24: ngx_http_consistent_hash
 Source25: nginx.te
+Source26: nginx.pp
 
 License: 2-clause BSD-like license
 
@@ -241,7 +242,7 @@ make %{?_smp_mflags}
 make %{?_smp_mflags}
 
 checkmodule -M -m -o nginx.mod %SOURCE25
-semodule_package -o nginx.pp -m nginx.mod
+semodule_package -o %SOURCE26 -m nginx.mod
 
 %install
 %{__rm} -rf $RPM_BUILD_ROOT
@@ -270,7 +271,7 @@ semodule_package -o nginx.pp -m nginx.mod
 %{__install} -m 644 -p %{SOURCE3} \
    $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig/nginx
 
-install -p -m 644 -D %{SOURCE0} \
+install -p -m 644 -D %{SOURCE26} \
    $RPM_BUILD_ROOT%{_datadir}/selinux/packages/nginx/nginx.pp
 
 %if %{use_systemd}
