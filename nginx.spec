@@ -76,6 +76,7 @@ Source21: ngx_http_enhanced_memcached_module
 Source22: ngx_devel_kit
 Source23: set-misc-nginx-module
 Source24: ngx_http_consistent_hash
+Source25: nginx.te
 
 License: 2-clause BSD-like license
 
@@ -85,6 +86,10 @@ BuildRequires: pcre-devel
 BuildRequires: openldap-devel
 BuildRequires: libxml2-devel
 BuildRequires: libxslt-devel
+BuildRequires: pam-devel
+
+BuildRequires: selinux-policy-targeted
+Requires: policycoreutils
 
 Provides: webserver
 
@@ -116,6 +121,7 @@ cp -R -p %SOURCE21 .
 cp -R -p %SOURCE22 .
 cp -R -p %SOURCE23 .
 cp -R -p %SOURCE24 .
+cp -R -p %SOURCE25 .
 
 %build
 ./configure \
@@ -234,6 +240,9 @@ make %{?_smp_mflags}
         $*
 make %{?_smp_mflags}
 
+checkmodule -M -m -o nginx.mod %SOURCE25
+semodule_package -o nginx.pp -m nginx.mod
+
 %install
 %{__rm} -rf $RPM_BUILD_ROOT
 %{__make} DESTDIR=$RPM_BUILD_ROOT install
@@ -260,6 +269,9 @@ make %{?_smp_mflags}
 %{__mkdir} -p $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig
 %{__install} -m 644 -p %{SOURCE3} \
    $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig/nginx
+
+install -p -m 644 -D %{SOURCE0} \
+   $RPM_BUILD_ROOT%{_datadir}/selinux/packages/nginx/nginx.pp
 
 %if %{use_systemd}
 # install systemd-specific files
@@ -327,6 +339,9 @@ make %{?_smp_mflags}
 %attr(0755,root,root) %dir %{_localstatedir}/cache/nginx
 %attr(0755,root,root) %dir %{_localstatedir}/log/nginx
 
+%dir %{_datadir}/selinux/packages/nginx
+%{_datadir}/selinux/packages/nginx/nginx.pp
+
 %files debug
 %attr(0755,root,root) %{_sbindir}/nginx.debug
 
@@ -341,6 +356,7 @@ exit 0
 %post
 # Register the nginx service
 if [ $1 -eq 1 ]; then
+semodule -i %{_datadir}/selinux/packages/nginx/nginx.pp 2>/dev/null ||:
 %if %{use_systemd}
     /usr/bin/systemctl preset nginx.service >/dev/null 2>&1 ||:
 %else
@@ -380,6 +396,7 @@ fi
 
 %preun
 if [ $1 -eq 0 ]; then
+semodule -r nginx 2>/dev/null || :
 %if %use_systemd
     /usr/bin/systemctl --no-reload disable nginx.service >/dev/null 2>&1 ||:
     /usr/bin/systemctl stop nginx.service >/dev/null 2>&1 ||:
@@ -397,6 +414,8 @@ if [ $1 -ge 1 ]; then
     /sbin/service nginx status  >/dev/null 2>&1 || exit 0
     /sbin/service nginx upgrade >/dev/null 2>&1 || echo \
         "Binary upgrade failed, please check nginx's error.log"
+    semodule -i %{_datadir}/selinux/packages/nginx/nginx.pp 2>/dev/null || :
+
 fi
 
 %changelog

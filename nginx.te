@@ -1,0 +1,17 @@
+module nginx 1.0;
+
+require {
+	type httpd_t;
+	type httpd_config_t;
+	class dir { write create add_name setattr };
+}
+
+#============= httpd_t ==============
+#!!!! The source type 'httpd_t' can write to a 'dir' of the following types:
+# squirrelmail_spool_t, mirrormanager_var_run_t, dirsrvadmin_config_t, var_lock_t, tmpfs_t, tmp_t, var_t, httpd_tmp_t, httpd_log_t, dirsrv_config_t, dirsrvadmin_tmp_t, httpd_cache_t, httpd_tmpfs_t, httpd_squirrelmail_t, var_lib_t, var_run_t, var_log_t, httpd_mediawiki_tmp_t, dirsrv_var_run_t, dirsrv_var_log_t, httpd_var_lib_t, httpd_var_run_t, zarafa_var_lib_t, httpd_prewikka_ra_content_t, httpd_prewikka_rw_content_t, httpd_mediawiki_ra_content_t, httpd_mediawiki_rw_content_t, httpd_squid_ra_content_t, httpd_squid_rw_content_t, httpd_smokeping_cgi_ra_content_t, passenger_var_run_t, httpd_smokeping_cgi_rw_content_t, httpd_openshift_ra_content_t, httpd_openshift_rw_content_t, httpd_dirsrvadmin_ra_content_t, httpd_dirsrvadmin_rw_content_t, httpd_w3c_validator_ra_content_t, httpd_w3c_validator_rw_content_t, httpd_collectd_ra_content_t, httpd_collectd_rw_content_t, cluster_var_lib_t, cluster_var_run_t, httpd_user_ra_content_t, httpd_user_rw_content_t, httpd_awstats_ra_content_t, httpd_awstats_rw_content_t, httpdcontent, root_t, httpd_cobbler_ra_content_t, httpd_cobbler_rw_content_t, httpd_munin_ra_content_t, httpd_munin_rw_content_t, cluster_conf_t, httpd_bugzilla_ra_content_t, httpd_bugzilla_rw_content_t, passenger_tmp_t, httpd_cvs_ra_content_t, httpd_cvs_rw_content_t, httpd_git_ra_content_t, httpd_git_rw_content_t, httpd_sys_ra_content_t, httpd_sys_rw_content_t, httpd_sys_rw_content_t, httpd_nagios_ra_content_t, httpd_apcupsd_cgi_ra_content_t, httpd_nagios_rw_content_t, httpd_apcupsd_cgi_rw_content_t, httpd_nutups_cgi_ra_content_t, httpd_nutups_cgi_rw_content_t, httpd_sys_content_t, httpd_dspam_ra_content_t, httpd_dspam_rw_content_t
+
+allow httpd_t httpd_config_t:dir write;
+
+#!!!! This avc is allowed in the current policy
+allow httpd_t httpd_config_t:dir { create add_name setattr };
+
