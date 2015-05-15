@@ -105,6 +105,14 @@ Requires: nginx
 %description debug
 Not stripped version of nginx built with the debugging log support.
 
+%package policy
+Summary: nginx selinux policy
+Group: System Environment/Daemons
+BuildRequires: selinux-policy-targeted
+Requires: policycoreutils
+%description policy
+Selinux policy for nginx when set to enforcing
+
 %prep
 %setup -q
 cp -R -p %SOURCE10 .
@@ -271,9 +279,6 @@ semodule_package -o %SOURCE26 -m nginx.mod
 %{__install} -m 644 -p %{SOURCE3} \
    $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig/nginx
 
-install -p -m 644 -D %{SOURCE26} \
-   $RPM_BUILD_ROOT%{_datadir}/selinux/packages/nginx/nginx.pp
-
 %if %{use_systemd}
 # install systemd-specific files
 %{__mkdir} -p $RPM_BUILD_ROOT%{_unitdir}
@@ -300,6 +305,9 @@ install -p -m 644 -D %{SOURCE26} \
    $RPM_BUILD_ROOT%{_sysconfdir}/logrotate.d/nginx
 %{__install} -m644 %{_builddir}/%{name}-%{version}/objs/nginx.debug \
    $RPM_BUILD_ROOT%{_sbindir}/nginx.debug
+
+install -p -m 644 -D %{SOURCE26} \
+   $RPM_BUILD_ROOT%{_datadir}/selinux/packages/nginx/nginx.pp
 
 %clean
 %{__rm} -rf $RPM_BUILD_ROOT
@@ -340,6 +348,7 @@ install -p -m 644 -D %{SOURCE26} \
 %attr(0755,root,root) %dir %{_localstatedir}/cache/nginx
 %attr(0755,root,root) %dir %{_localstatedir}/log/nginx
 
+%files policy
 %dir %{_datadir}/selinux/packages/nginx
 %{_datadir}/selinux/packages/nginx/nginx.pp
 
@@ -357,7 +366,6 @@ exit 0
 %post
 # Register the nginx service
 if [ $1 -eq 1 ]; then
-semodule -i %{_datadir}/selinux/packages/nginx/nginx.pp 2>/dev/null ||:
 %if %{use_systemd}
     /usr/bin/systemctl preset nginx.service >/dev/null 2>&1 ||:
 %else
@@ -394,6 +402,8 @@ BANNER
         fi
     fi
 fi
+%post policy
+semodule -i %{_datadir}/selinux/packages/nginx/nginx.pp 2>/dev/null ||:
 
 %preun
 if [ $1 -eq 0 ]; then
@@ -407,6 +417,9 @@ semodule -r nginx 2>/dev/null || :
 %endif
 fi
 
+%preun policy 
+semodule -r nginx 2>/dev/null || :
+
 %postun
 %if %use_systemd
 /usr/bin/systemctl daemon-reload >/dev/null 2>&1 ||:
@@ -415,9 +428,10 @@ if [ $1 -ge 1 ]; then
     /sbin/service nginx status  >/dev/null 2>&1 || exit 0
     /sbin/service nginx upgrade >/dev/null 2>&1 || echo \
         "Binary upgrade failed, please check nginx's error.log"
-    semodule -i %{_datadir}/selinux/packages/nginx/nginx.pp 2>/dev/null || :
-
 fi
+
+%postun policy 
+semodule -i %{_datadir}/selinux/packages/nginx/nginx.pp 2>/dev/null || :
 
 %changelog
 * Tue Sep 16 2014 Sergey Budnevitch <sb@nginx.com>
