@@ -4,6 +4,7 @@
 sudo rm -rf ~/rpmbuild/RPMS/*/nginx-*.rpm
 
 #Install required packages for building
+sudo yum groupinstall -y 'Development tools'
 sudo yum install -y \
     rpm-build \
     rpmdevtools \

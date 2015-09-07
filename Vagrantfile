@@ -3,8 +3,8 @@
 
 Vagrant.configure("2") do |config|
 
-  config.vm.box     = "centos-65-x64-vbox436"
-  config.vm.box_url = "http://puppet-vagrant-boxes.puppetlabs.com/centos-65-x64-virtualbox-puppet.box"
+  config.vm.box     = "centos-6.7-x86_64-jcu"
+  config.vm.box_url = "https://www.hpc.jcu.edu.au/boxes/centos-6.7-x86_64-virtualbox.box"
 
   config.vm.network :private_network, ip: "33.33.33.10"
 
