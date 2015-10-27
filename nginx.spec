@@ -146,6 +146,7 @@ cp -R -p %SOURCE23 .
 cp -R -p %SOURCE24 .
 cp -R -p %SOURCE25 .
 cp -R -p %SOURCE27 .
+cp -R -p %SOURCE28 .
 
 %build
 ./configure \
