@@ -78,7 +78,7 @@ Source23: set-misc-nginx-module
 Source24: ngx_http_consistent_hash
 Source25: nginx.te
 Source26: nginx.pp
-Source27: passenger/src/nginx_module
+Source27: passenger
 Source28: passenger.conf
 
 License: 2-clause BSD-like license
@@ -102,8 +102,8 @@ BuildRequires: ruby
 BuildRequires: ruby-devel
 BuildRequires: rubygems
 BuildRequires: rubygems-devel
-BuildRequires: rubygem(rake) >= 0.8.1
-BuildRequires: rubygem(rack)
+# BuildRequires: rubygem(rake) >= 0.8.1
+# BuildRequires: rubygem(rack)
 # End Passenger module build requirements
 
 Provides: webserver
@@ -203,7 +203,7 @@ cp -R -p %SOURCE27 .
 	--add-module=%{_builddir}/%{name}-%{version}/set-misc-nginx-module \
 	--add-module=%{_builddir}/%{name}-%{version}/ngx_http_consistent_hash \
 	--add-module=%{_builddir}/%{name}-%{version}/ngx_http_auth_pam_module \
-    --add-module=%{_builddir}/%{name}-%{version}/nginx_module \
+    --add-module=%{_builddir}/%{name}-%{version}/passenger/src/nginx_module \
         $*
 make %{?_smp_mflags}
 %{__mv} %{_builddir}/%{name}-%{version}/objs/nginx \
@@ -262,6 +262,7 @@ make %{?_smp_mflags}
         --add-module=%{_builddir}/%{name}-%{version}/set-misc-nginx-module \
         --add-module=%{_builddir}/%{name}-%{version}/ngx_http_consistent_hash \
         --add-module=%{_builddir}/%{name}-%{version}/ngx_http_auth_pam_module \
+        --add-module=%{_builddir}/%{name}-%{version}/passenger/src/nginx_module \
         $*
 make %{?_smp_mflags}
 
