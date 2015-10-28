@@ -78,6 +78,8 @@ Source23: set-misc-nginx-module
 Source24: ngx_http_consistent_hash
 Source25: nginx.te
 Source26: nginx.pp
+Source27: passenger
+Source28: passenger.conf
 
 License: 2-clause BSD-like license
 
@@ -91,6 +93,18 @@ BuildRequires: pam-devel
 
 BuildRequires: selinux-policy-targeted
 Requires: policycoreutils
+
+# Begin Passenger module requires
+BuildRequires: libcurl-devel
+BuildRequires: httpd-devel
+BuildRequires: libev-devel >= 4.0.0
+BuildRequires: ruby
+BuildRequires: ruby-devel
+BuildRequires: rubygems
+BuildRequires: rubygems-devel
+# BuildRequires: rubygem(rake) >= 0.8.1
+# BuildRequires: rubygem(rack)
+# End Passenger module build requirements
 
 Provides: webserver
 
@@ -131,6 +145,7 @@ cp -R -p %SOURCE22 .
 cp -R -p %SOURCE23 .
 cp -R -p %SOURCE24 .
 cp -R -p %SOURCE25 .
+cp -R -p %SOURCE27 .
 
 %build
 ./configure \
@@ -188,6 +203,7 @@ cp -R -p %SOURCE25 .
 	--add-module=%{_builddir}/%{name}-%{version}/set-misc-nginx-module \
 	--add-module=%{_builddir}/%{name}-%{version}/ngx_http_consistent_hash \
 	--add-module=%{_builddir}/%{name}-%{version}/ngx_http_auth_pam_module \
+    --add-module=%{_builddir}/%{name}-%{version}/passenger/src/nginx_module \
         $*
 make %{?_smp_mflags}
 %{__mv} %{_builddir}/%{name}-%{version}/objs/nginx \
@@ -246,6 +262,7 @@ make %{?_smp_mflags}
         --add-module=%{_builddir}/%{name}-%{version}/set-misc-nginx-module \
         --add-module=%{_builddir}/%{name}-%{version}/ngx_http_consistent_hash \
         --add-module=%{_builddir}/%{name}-%{version}/ngx_http_auth_pam_module \
+        --add-module=%{_builddir}/%{name}-%{version}/passenger/src/nginx_module \
         $*
 make %{?_smp_mflags}
 
@@ -274,6 +291,8 @@ semodule_package -o %SOURCE26 -m nginx.mod
    $RPM_BUILD_ROOT%{_sysconfdir}/nginx/conf.d/default.conf.sample
 %{__install} -m 644 -p %{SOURCE6} \
    $RPM_BUILD_ROOT%{_sysconfdir}/nginx/conf.d/example_ssl.conf.sample
+%{__install} -m 644 -p %{SOURCE28} \
+   $RPM_BUILD_ROOT%{_sysconfdir}/nginx/conf.d/passenger.conf
 
 %{__mkdir} -p $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig
 %{__install} -m 644 -p %{SOURCE3} \
@@ -323,6 +342,7 @@ install -p -m 644 -D %{SOURCE26} \
 %config(noreplace) %{_sysconfdir}/nginx/nginx.conf
 %config(noreplace) %{_sysconfdir}/nginx/conf.d/default.conf.sample
 %config(noreplace) %{_sysconfdir}/nginx/conf.d/example_ssl.conf.sample
+%config(noreplace) %{_sysconfdir}/nginx/conf.d/passenger.conf
 %config(noreplace) %{_sysconfdir}/nginx/mime.types
 %config(noreplace) %{_sysconfdir}/nginx/fastcgi_params
 %config(noreplace) %{_sysconfdir}/nginx/scgi_params
