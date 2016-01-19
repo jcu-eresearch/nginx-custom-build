@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 #Clean up old nginx builds
 sudo rm -rf ~/rpmbuild/RPMS/*/nginx-*.rpm
