@@ -1,20 +1,11 @@
 diff --git a/nginx.spec b/nginx.spec
-index 281e40b..8a9a7d2 100644
+index e034726..0727780 100644
 --- a/nginx.spec
 +++ b/nginx.spec
-@@ -59,7 +59,7 @@ Requires: systemd
- Summary: High performance web server
- Name: nginx
- Version: 1.8.0
--Release: 1%{?dist}.ngx
-+Release: 3%{?dist}.ngx
- Vendor: nginx inc.
- URL: http://nginx.org/
- 
-@@ -74,12 +74,21 @@ Source7: nginx.suse.init
- Source8: nginx.service
- Source9: nginx.upgrade.sh
+@@ -68,12 +68,21 @@ Source9: nginx.upgrade.sh
  Source10: nginx.suse.logrotate
+ Source11: nginx-debug.service
+ Source12: COPYRIGHT
 +Source100: headers-more-nginx-module
 +Source101: ngx-fancyindex
 +Source102: nginx_ajp_module
@@ -33,10 +24,10 @@ index 281e40b..8a9a7d2 100644
  
  Provides: webserver
  
-@@ -100,6 +109,12 @@ Not stripped version of nginx built with the debugging log support.
- 
- %prep
- %setup -q
+@@ -92,6 +101,12 @@ sed -e 's|%%DEFAULTSTART%%|2 3 4 5|g' -e 's|%%DEFAULTSTOP%%|0 1 6|g' \
+     -e 's|%%PROVIDES%%|nginx|g' < %{SOURCE2} > nginx.init
+ sed -e 's|%%DEFAULTSTART%%||g' -e 's|%%DEFAULTSTOP%%|0 1 2 3 4 5 6|g' \
+     -e 's|%%PROVIDES%%|nginx-debug|g' < %{SOURCE2} > nginx-debug.init
 +cp -R -p %SOURCE100 .
 +cp -R -p %SOURCE101 .
 +cp -R -p %SOURCE102 .
@@ -46,11 +37,10 @@ index 281e40b..8a9a7d2 100644
  
  %build
  ./configure \
-@@ -137,6 +152,13 @@ Not stripped version of nginx built with the debugging log support.
+@@ -133,6 +148,12 @@ sed -e 's|%%DEFAULTSTART%%||g' -e 's|%%DEFAULTSTOP%%|0 1 2 3 4 5 6|g' \
          --with-debug \
-         %{?with_spdy:--with-http_spdy_module} \
+         %{?with_http2:--with-http_v2_module} \
          --with-cc-opt="%{optflags} $(pcre-config --cflags)" \
-+        --with-http_spdy_module \
 +        --with-http_xslt_module \
 +        --add-module=%{_builddir}/%{name}-%{version}/ngx-fancyindex \
 +        --add-module=%{_builddir}/%{name}-%{version}/nginx_ajp_module \
@@ -60,11 +50,10 @@ index 281e40b..8a9a7d2 100644
          $*
  make %{?_smp_mflags}
  %{__mv} %{_builddir}/%{name}-%{version}/objs/nginx \
-@@ -175,6 +197,13 @@ make %{?_smp_mflags}
+@@ -175,6 +196,12 @@ make %{?_smp_mflags}
          --with-ipv6 \
-         %{?with_spdy:--with-http_spdy_module} \
+         %{?with_http2:--with-http_v2_module} \
          --with-cc-opt="%{optflags} $(pcre-config --cflags)" \
-+        --with-http_spdy_module \
 +        --with-http_xslt_module \
 +        --add-module=%{_builddir}/%{name}-%{version}/ngx-fancyindex \
 +        --add-module=%{_builddir}/%{name}-%{version}/nginx_ajp_module \

@@ -2,9 +2,9 @@ About this Nginx
 ================
 
 .. important::
-   This Nginx build currently supports version 1.8.x.  Please see the
+   This Nginx build currently supports version 1.9.x.  Please see the
    tags within this repository for previously supported versions
-   (``v1.4.x``, ``v1.6.3``).
+   (``v1.4.x``, ``v1.6.3``, ``v1.8.x``).
 
 This version of Nginx is customised in a number of different ways:
 
@@ -45,8 +45,8 @@ https://github.com/jcu-eresearch/nginx-custom-build/blob/master/nginx-build.sh
 on your own EL 6 machine.  The script will automatically clone the latest
 patches from this GitHub repository.
 
-This Vagrant configuration will always build the **latest stable** version
-of Nginx.
+This Vagrant configuration in ``master`` will always build the **latest
+stable** version of Nginx.
 
 
 Testing and debugging nginx-http-shibboleth
