@@ -34,7 +34,7 @@ pushd ~/rpmbuild/SOURCES
     #Headers More module
     git clone https://github.com/openresty/headers-more-nginx-module
     pushd headers-more-nginx-module
-    git checkout v0.261
+    git checkout v0.29
     popd
 
     #Fancy Index module
@@ -52,7 +52,7 @@ pushd ~/rpmbuild/SOURCES
     #LDAP authentication module
     git clone https://github.com/kvspb/nginx-auth-ldap.git
     pushd nginx-auth-ldap
-    git checkout 928856a
+    git checkout d0f2f82
     popd
 
     #Shibboleth module
