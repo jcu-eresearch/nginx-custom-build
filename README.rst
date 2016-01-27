@@ -19,7 +19,9 @@ This version of Nginx is customised in a number of different ways:
   <https://github.com/kvspb/nginx-auth-ldap>`_.
 * Has custom HTML XSLT transformation built in. This allows 
   transformation of HTML documents on-the-fly via XSL (eg that which
-  comes from `Diazo <http://diazo.org>`_ for theming).
+  comes from `Diazo <http://diazo.org>`_ for theming).  Help support
+  the `patch being merged <https://trac.nginx.org/nginx/ticket/609>`_
+  into Nginx's core.
 * Has the ``ngx-fancyindex`` module for folder listings.
 * Has the ``ngx_ajp_module`` module for talking to AJP backends.
 * Has XLST support built.
