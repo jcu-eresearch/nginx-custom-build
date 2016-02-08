@@ -1,8 +1,8 @@
 diff --git a/nginx.spec b/nginx.spec
-index e034726..0727780 100644
+index 7930be9..6246993 100644
 --- a/nginx.spec
 +++ b/nginx.spec
-@@ -68,12 +68,21 @@ Source9: nginx.upgrade.sh
+@@ -68,12 +68,22 @@ Source9: nginx.upgrade.sh
  Source10: nginx.suse.logrotate
  Source11: nginx-debug.service
  Source12: COPYRIGHT
@@ -12,6 +12,7 @@ index e034726..0727780 100644
 +Source103: nginx-xslt-html-parser.patch
 +Source104: nginx-auth-ldap
 +Source105: nginx-http-shibboleth
++Source106: ngx_pagespeed
  
  License: 2-clause BSD-like license
  
@@ -24,7 +25,7 @@ index e034726..0727780 100644
  
  Provides: webserver
  
-@@ -92,6 +101,12 @@ sed -e 's|%%DEFAULTSTART%%|2 3 4 5|g' -e 's|%%DEFAULTSTOP%%|0 1 6|g' \
+@@ -92,6 +102,13 @@ sed -e 's|%%DEFAULTSTART%%|2 3 4 5|g' -e 's|%%DEFAULTSTOP%%|0 1 6|g' \
      -e 's|%%PROVIDES%%|nginx|g' < %{SOURCE2} > nginx.init
  sed -e 's|%%DEFAULTSTART%%||g' -e 's|%%DEFAULTSTOP%%|0 1 2 3 4 5 6|g' \
      -e 's|%%PROVIDES%%|nginx-debug|g' < %{SOURCE2} > nginx-debug.init
@@ -34,10 +35,11 @@ index e034726..0727780 100644
 +patch -p1 < %SOURCE103
 +cp -R -p %SOURCE104 .
 +cp -R -p %SOURCE105 .
++cp -R -p %SOURCE106 .
  
  %build
  ./configure \
-@@ -133,6 +148,12 @@ sed -e 's|%%DEFAULTSTART%%||g' -e 's|%%DEFAULTSTOP%%|0 1 2 3 4 5 6|g' \
+@@ -133,6 +150,14 @@ sed -e 's|%%DEFAULTSTART%%||g' -e 's|%%DEFAULTSTOP%%|0 1 2 3 4 5 6|g' \
          --with-debug \
          %{?with_http2:--with-http_v2_module} \
          --with-cc-opt="%{optflags} $(pcre-config --cflags)" \
@@ -47,10 +49,12 @@ index e034726..0727780 100644
 +        --add-module=%{_builddir}/%{name}-%{version}/headers-more-nginx-module \
 +        --add-module=%{_builddir}/%{name}-%{version}/nginx-auth-ldap \
 +        --add-module=%{_builddir}/%{name}-%{version}/nginx-http-shibboleth \
++        --add-module=%{_builddir}/%{name}-%{version}/ngx_pagespeed \
++        --with-cc=/opt/rh/devtoolset-2/root/usr/bin/gcc
          $*
  make %{?_smp_mflags}
  %{__mv} %{_builddir}/%{name}-%{version}/objs/nginx \
-@@ -175,6 +196,12 @@ make %{?_smp_mflags}
+@@ -175,6 +200,14 @@ make %{?_smp_mflags}
          --with-ipv6 \
          %{?with_http2:--with-http_v2_module} \
          --with-cc-opt="%{optflags} $(pcre-config --cflags)" \
@@ -60,6 +64,8 @@ index e034726..0727780 100644
 +        --add-module=%{_builddir}/%{name}-%{version}/headers-more-nginx-module \
 +        --add-module=%{_builddir}/%{name}-%{version}/nginx-auth-ldap \
 +        --add-module=%{_builddir}/%{name}-%{version}/nginx-http-shibboleth \
++        --add-module=%{_builddir}/%{name}-%{version}/ngx_pagespeed \
++        --with-cc=/opt/rh/devtoolset-2/root/usr/bin/gcc
          $*
  make %{?_smp_mflags}
  

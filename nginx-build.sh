@@ -64,6 +64,21 @@ pushd ~/rpmbuild/SOURCES
     #Shibboleth module
     git clone https://github.com/nginx-shib/nginx-http-shibboleth.git
 
+    #Pagespeed module
+    sudo rpm --import https://linux.web.cern.ch/linux/scientific6/docs/repository/cern/slc6X/i386/RPM-GPG-KEY-cern
+    sudo wget -O /etc/yum.repos.d/slc6-devtoolset.repo https://linux.web.cern.ch/linux/scientific6/docs/repository/cern/devtoolset/slc6-devtoolset.repo
+    sudo yum install devtoolset-2-gcc-c++ devtoolset-2-binutils -y
+
+    NPS_VERSION=1.10.33.4
+    wget https://github.com/pagespeed/ngx_pagespeed/archive/release-${NPS_VERSION}-beta.zip -O release-${NPS_VERSION}-beta.zip
+    unzip release-${NPS_VERSION}-beta.zip
+    pushd ngx_pagespeed-release-${NPS_VERSION}-beta/
+    wget https://dl.google.com/dl/page-speed/psol/${NPS_VERSION}.tar.gz
+    tar -xzvf ${NPS_VERSION}.tar.gz  # extracts to psol/
+    popd
+    rm -rf ngx_pagespeed
+    mv ngx_pagespeed-release-${NPS_VERSION}-beta/ ngx_pagespeed
+
 popd
 
 # Obtain a location for the patches, either from /vagrant
