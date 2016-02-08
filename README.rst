@@ -76,7 +76,7 @@ Tests
 
 Run the following::
 
-   curl -i http://localhost/test{1,2,3}
+   curl -i http://localhost/test{1..10}
 
 and compare the request results with the comments in the configuration above.
 If any of the above don't behave exactly as specified this, the Shibboleth
