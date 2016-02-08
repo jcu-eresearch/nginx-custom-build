@@ -23,6 +23,12 @@ gpgcheck=0
 enabled=1""" > nginx.repo
 sudo mv nginx.repo /etc/yum.repos.d/
 yumdownloader --source nginx
+
+if ! [ -e nginx*.src.rpm ]; then
+    echo "Couldn't download Nginx source RPM. Aborting build."
+    exit 1
+fi
+
 sudo rpm -ihv nginx*.src.rpm
 popd
 
