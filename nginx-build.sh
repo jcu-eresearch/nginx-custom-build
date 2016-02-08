@@ -16,9 +16,9 @@ sudo yum install -y \
 
 #Install source RPM for Nginx
 pushd ~
-echo """[nginx]
+echo """[nginx-source]
 name=nginx repo
-baseurl=http://nginx.org/packages/mainline/centos/6/\$basearch/
+baseurl=http://nginx.org/packages/mainline/centos/6/SRPMS/
 gpgcheck=0
 enabled=1""" > nginx.repo
 sudo mv nginx.repo /etc/yum.repos.d/
