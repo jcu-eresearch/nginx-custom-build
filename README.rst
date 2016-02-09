@@ -14,7 +14,6 @@ This version of Nginx is customised in a number of different ways:
   requires a Shibboleth SP built with FastCGI support and correctly
   configured.
   Shibboleth authentication with applications served via Nginx.
-* Has SPDY support built (depends on OpenSSL 1.0.1 being installed)
 * Adds LDAP authentication for Nginx using `nginx-ldap-auth
   <https://github.com/kvspb/nginx-auth-ldap>`_.
 * Has custom HTML XSLT transformation built in. This allows 
@@ -23,6 +22,9 @@ This version of Nginx is customised in a number of different ways:
 * Has the ``ngx-fancyindex`` module for folder listings.
 * Has the ``ngx_ajp_module`` module for talking to AJP backends.
 * Has XLST support built.
+* Has HTTP2 support built
+* Adds the `ngx_pagespeed <http://ngxpagespeed.com/>`_ module for page
+  optimisation.
 
 See the build script for details of where these dependencies live.
 
