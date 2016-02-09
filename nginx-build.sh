@@ -88,6 +88,11 @@ spectool -g -R nginx.spec
 yum-builddep -y nginx.spec
 rpmbuild -ba nginx.spec
 
+if ! [ $? -eq 0 ]; then
+    echo "RPM build failed. See the output above to establish why."
+    exit 1
+fi
+
 #Test installation and check output
 sudo yum remove -y nginx nginx-debug
 sudo yum install -y ~/rpmbuild/RPMS/*/nginx-*.rpm
