@@ -58,7 +58,7 @@ pushd ~/rpmbuild/SOURCES
     #LDAP authentication module
     git clone https://github.com/kvspb/nginx-auth-ldap.git
     pushd nginx-auth-ldap
-    git checkout 8517bb0
+    git checkout d0f2f82
     popd
 
     #Shibboleth module
