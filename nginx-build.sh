@@ -46,7 +46,7 @@ pushd ~/rpmbuild/SOURCES
     #Fancy Index module
     git clone https://github.com/aperezdc/ngx-fancyindex.git
     pushd ngx-fancyindex
-    git checkout v0.3.5
+    git checkout v0.3.6
     popd
 
     #AJP module
@@ -58,7 +58,7 @@ pushd ~/rpmbuild/SOURCES
     #LDAP authentication module
     git clone https://github.com/kvspb/nginx-auth-ldap.git
     pushd nginx-auth-ldap
-    git checkout d0f2f82
+    git checkout 8517bb0
     popd
 
     #Shibboleth module
