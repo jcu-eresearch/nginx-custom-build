@@ -46,7 +46,7 @@ pushd ~/rpmbuild/SOURCES
     #Fancy Index module
     git clone https://github.com/aperezdc/ngx-fancyindex.git
     pushd ngx-fancyindex
-    git checkout v0.3.5
+    git checkout v0.3.6
     popd
 
     #AJP module
@@ -102,6 +102,11 @@ patch -p1 < nginx-eresearch.patch
 spectool -g -R nginx.spec
 yum-builddep -y nginx.spec
 rpmbuild -ba nginx.spec
+
+if ! [ $? -eq 0 ]; then
+    echo "RPM build failed. See the output above to establish why."
+    exit 1
+fi
 
 #Test installation and check output
 sudo yum remove -y nginx nginx-debug
