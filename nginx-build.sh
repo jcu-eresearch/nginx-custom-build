@@ -47,7 +47,7 @@ pushd ~/rpmbuild/SOURCES
     #Fancy Index module
     git clone https://github.com/aperezdc/ngx-fancyindex.git
     pushd ngx-fancyindex
-    git checkout v0.3.6
+    git checkout 80db501
     popd
 
     #AJP module
