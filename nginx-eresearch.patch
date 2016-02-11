@@ -1,5 +1,5 @@
 diff --git a/nginx.spec b/nginx.spec
-index decf820..b67e3d4 100644
+index decf820..1abd76a 100644
 --- a/nginx.spec
 +++ b/nginx.spec
 @@ -68,12 +68,22 @@ Source9: nginx.upgrade.sh
@@ -39,7 +39,7 @@ index decf820..b67e3d4 100644
  
  %build
  ./configure \
-@@ -134,6 +149,12 @@ sed -e 's|%%DEFAULTSTART%%||g' -e 's|%%DEFAULTSTOP%%|0 1 2 3 4 5 6|g' \
+@@ -134,6 +151,14 @@ sed -e 's|%%DEFAULTSTART%%||g' -e 's|%%DEFAULTSTOP%%|0 1 2 3 4 5 6|g' \
          %{?with_http2:--with-http_v2_module} \
          --with-cc-opt="%{optflags} $(pcre-config --cflags)" \
          --with-debug \
@@ -50,11 +50,11 @@ index decf820..b67e3d4 100644
 +        --add-module=%{_builddir}/%{name}-%{version}/nginx-auth-ldap \
 +        --add-module=%{_builddir}/%{name}-%{version}/nginx-http-shibboleth \
 +        --add-module=%{_builddir}/%{name}-%{version}/ngx_pagespeed \
-+        --with-cc=/opt/rh/devtoolset-2/root/usr/bin/gcc
++        --with-cc=/opt/rh/devtoolset-2/root/usr/bin/gcc \
          $*
  make %{?_smp_mflags}
  %{__mv} %{_builddir}/%{name}-%{version}/objs/nginx \
-@@ -177,6 +198,12 @@ make %{?_smp_mflags}
+@@ -177,6 +202,14 @@ make %{?_smp_mflags}
          --with-ipv6 \
          %{?with_http2:--with-http_v2_module} \
          --with-cc-opt="%{optflags} $(pcre-config --cflags)" \
@@ -65,7 +65,7 @@ index decf820..b67e3d4 100644
 +        --add-module=%{_builddir}/%{name}-%{version}/nginx-auth-ldap \
 +        --add-module=%{_builddir}/%{name}-%{version}/nginx-http-shibboleth \
 +        --add-module=%{_builddir}/%{name}-%{version}/ngx_pagespeed \
-+        --with-cc=/opt/rh/devtoolset-2/root/usr/bin/gcc
++        --with-cc=/opt/rh/devtoolset-2/root/usr/bin/gcc \
          $*
  make %{?_smp_mflags}
  
