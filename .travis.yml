@@ -18,6 +18,7 @@ before_script:
   - echo "deb http://download.virtualbox.org/virtualbox/debian precise contrib" | sudo tee -a /etc/apt/sources.list
   - sudo apt-get update -qq
   - sudo apt-get install virtualbox-5.0 -y
+  - sudo /etc/init.d/vboxdrv setup
   - vagrant plugin install vagrant-vbguest
 script:
   - vagrant up --provision
