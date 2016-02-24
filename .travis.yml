@@ -7,6 +7,8 @@ cache:
   directories:
     - $HOME/.vagrant.d
     - $HOME/downloads
+before_install:
+  - sudo rm /etc/apt/sources.list.d/mongodb.list
 before_script:
   - mkdir downloads && cd downloads
   - wget -c https://releases.hashicorp.com/vagrant/1.8.1/vagrant_1.8.1_x86_64.deb
