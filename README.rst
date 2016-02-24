@@ -1,6 +1,9 @@
 About this Nginx
 ================
 
+.. image:: https://travis-ci.org/jcu-eresearch/nginx-custom-build.svg?branch=master
+   :target: https://travis-ci.org/jcu-eresearch/nginx-custom-build
+
 .. important::
    This Nginx build currently supports version 1.9.x.  Please see the
    tags within this repository for previously supported versions
