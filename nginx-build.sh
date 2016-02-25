@@ -25,9 +25,14 @@ baseurl=http://nginx.org/packages/mainline/centos/6/SRPMS/
 gpgcheck=0
 enabled=1""" > nginx.repo
 sudo mv nginx.repo /etc/yum.repos.d/
-rm -rf nginx*.src.rpm
-yumdownloader --source nginx
 
+# Download specific Nginx version or just the latest version
+rm -rf nginx*.src.rpm
+if [ $_NGINX_VERSION ]; then
+    yumdownloader --source "nginx-$_NGINX_VERSION"
+else
+    yumdownloader --source nginx
+fi
 if ! [ $? -eq 0 ]; then
     echo "Couldn't download Nginx source RPM. Aborting build."
     exit 1

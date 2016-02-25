@@ -49,7 +49,14 @@ on your own EL 6 machine.  The script will automatically clone the latest
 patches from this GitHub repository.
 
 This Vagrant configuration in ``master`` will always build the **latest
-stable** version of Nginx.
+stable** version of Nginx.  Occasionally, mainline compatible versions will be
+present; consult available branches.
+
+It is also possible to select a specific version of Nginx to build against by
+setting the environment variable `_NGINX_VERSION` (such as
+``export _NGINX_VERSION=1.9.12``).
+
+
 
 Credits
 =======
