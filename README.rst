@@ -5,7 +5,7 @@ About this Nginx
    :target: https://travis-ci.org/jcu-eresearch/nginx-custom-build
 
 .. important::
-   This Nginx build currently supports version 1.9.x.  Please see the
+   This Nginx build currently supports version 1.9.12+.  Please see the
    tags within this repository for previously supported versions
    (``v1.4.x``, ``v1.6.3``, ``v1.8.x``).
 

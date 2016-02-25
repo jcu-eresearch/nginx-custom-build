@@ -1,8 +1,20 @@
 diff --git a/nginx.spec b/nginx.spec
-index decf820..b67e3d4 100644
+index b9b5eea..5822340 100644
 --- a/nginx.spec
 +++ b/nginx.spec
-@@ -68,12 +68,21 @@ Source9: nginx.upgrade.sh
+@@ -83,6 +83,11 @@ Requires: systemd
+         --with-http_xslt_module=dynamic \
+         --with-http_image_filter_module=dynamic \
+         --with-http_geoip_module=dynamic \
++        --add-module=%{_builddir}/%{name}-%{version}/ngx-fancyindex \
++        --add-module=%{_builddir}/%{name}-%{version}/nginx_ajp_module \
++        --add-module=%{_builddir}/%{name}-%{version}/headers-more-nginx-module \
++        --add-module=%{_builddir}/%{name}-%{version}/nginx-auth-ldap \
++        --add-module=%{_builddir}/%{name}-%{version}/nginx-http-shibboleth \
+         --with-threads \
+         --with-stream \
+         --with-stream_ssl_module \
+@@ -112,12 +117,19 @@ Source9: nginx.upgrade.sh
  Source10: nginx.suse.logrotate
  Source11: nginx-debug.service
  Source12: COPYRIGHT
@@ -19,12 +31,10 @@ index decf820..b67e3d4 100644
  BuildRequires: zlib-devel
  BuildRequires: pcre-devel
 +BuildRequires: openldap-devel
-+BuildRequires: libxml2-devel
-+BuildRequires: libxslt-devel
  
  Provides: webserver
  
-@@ -92,6 +101,12 @@ sed -e 's|%%DEFAULTSTART%%|2 3 4 5|g' -e 's|%%DEFAULTSTOP%%|0 1 6|g' \
+@@ -175,6 +187,12 @@ sed -e 's|%%DEFAULTSTART%%|2 3 4 5|g' -e 's|%%DEFAULTSTOP%%|0 1 6|g' \
      -e 's|%%PROVIDES%%|nginx|g' < %{SOURCE2} > nginx.init
  sed -e 's|%%DEFAULTSTART%%||g' -e 's|%%DEFAULTSTOP%%|0 1 2 3 4 5 6|g' \
      -e 's|%%PROVIDES%%|nginx-debug|g' < %{SOURCE2} > nginx-debug.init
@@ -36,30 +46,4 @@ index decf820..b67e3d4 100644
 +cp -R -p %SOURCE105 .
  
  %build
- ./configure \
-@@ -134,6 +149,12 @@ sed -e 's|%%DEFAULTSTART%%||g' -e 's|%%DEFAULTSTOP%%|0 1 2 3 4 5 6|g' \
-         %{?with_http2:--with-http_v2_module} \
-         --with-cc-opt="%{optflags} $(pcre-config --cflags)" \
-         --with-debug \
-+        --with-http_xslt_module \
-+        --add-module=%{_builddir}/%{name}-%{version}/ngx-fancyindex \
-+        --add-module=%{_builddir}/%{name}-%{version}/nginx_ajp_module \
-+        --add-module=%{_builddir}/%{name}-%{version}/headers-more-nginx-module \
-+        --add-module=%{_builddir}/%{name}-%{version}/nginx-auth-ldap \
-+        --add-module=%{_builddir}/%{name}-%{version}/nginx-http-shibboleth \
-         $*
- make %{?_smp_mflags}
- %{__mv} %{_builddir}/%{name}-%{version}/objs/nginx \
-@@ -177,6 +198,12 @@ make %{?_smp_mflags}
-         --with-ipv6 \
-         %{?with_http2:--with-http_v2_module} \
-         --with-cc-opt="%{optflags} $(pcre-config --cflags)" \
-+        --with-http_xslt_module \
-+        --add-module=%{_builddir}/%{name}-%{version}/ngx-fancyindex \
-+        --add-module=%{_builddir}/%{name}-%{version}/nginx_ajp_module \
-+        --add-module=%{_builddir}/%{name}-%{version}/headers-more-nginx-module \
-+        --add-module=%{_builddir}/%{name}-%{version}/nginx-auth-ldap \
-+        --add-module=%{_builddir}/%{name}-%{version}/nginx-http-shibboleth \
-         $*
- make %{?_smp_mflags}
- 
+ ./configure %{COMMON_CONFIGURE_ARGS} \

@@ -3,6 +3,9 @@
 #Clean up old nginx builds
 sudo rm -rf ~/rpmbuild/RPMS/*/nginx-*.rpm
 
+#Configure EPEL for GeoIP-devel
+sudo rpm -ivh https://dl.fedoraproject.org/pub/epel/epel-release-latest-6.noarch.rpm
+
 #Install required packages for building
 sudo yum groupinstall -y 'Development tools'
 sudo yum install -y \
