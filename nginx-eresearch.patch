@@ -1,40 +1,50 @@
 diff --git a/nginx.spec b/nginx.spec
-index b9b5eea..5822340 100644
+index 8d6d53c..59e81ec 100644
 --- a/nginx.spec
 +++ b/nginx.spec
-@@ -83,6 +83,11 @@ Requires: systemd
-         --with-http_xslt_module=dynamic \
+@@ -27,6 +27,7 @@ Requires(post): chkconfig
+ Requires: openssl >= 1.0.1
+ BuildRequires: openssl-devel >= 1.0.1
+ BuildRequires: perl-devel
++BuildRequires: perl-ExtUtils-Embed
+ BuildRequires: GeoIP-devel
+ %endif
+ 
+@@ -111,6 +112,11 @@ BuildRequires: libGeoIP-devel
          --with-http_image_filter_module=dynamic \
          --with-http_geoip_module=dynamic \
-+        --add-module=%{_builddir}/%{name}-%{version}/ngx-fancyindex \
-+        --add-module=%{_builddir}/%{name}-%{version}/nginx_ajp_module \
-+        --add-module=%{_builddir}/%{name}-%{version}/headers-more-nginx-module \
-+        --add-module=%{_builddir}/%{name}-%{version}/nginx-auth-ldap \
-+        --add-module=%{_builddir}/%{name}-%{version}/nginx-http-shibboleth \
+         --with-http_perl_module=dynamic \
++        --add-module=%{bdir}/ngx-fancyindex \
++        --add-module=%{bdir}/nginx_ajp_module \
++        --add-module=%{bdir}/headers-more-nginx-module \
++        --add-module=%{bdir}/nginx-auth-ldap \
++        --add-module=%{bdir}/nginx-http-shibboleth \
+         --add-dynamic-module=njs-%{module_njs_shaid}/nginx \
          --with-threads \
          --with-stream \
-         --with-stream_ssl_module \
-@@ -112,12 +117,19 @@ Source9: nginx.upgrade.sh
- Source10: nginx.suse.logrotate
+@@ -143,6 +149,13 @@ Source10: nginx.suse.logrotate
  Source11: nginx-debug.service
  Source12: COPYRIGHT
+ Source13: njs-%{module_njs_shaid}.tar.gz
 +Source100: headers-more-nginx-module
 +Source101: ngx-fancyindex
 +Source102: nginx_ajp_module
 +Source103: nginx-xslt-html-parser.patch
 +Source104: nginx-auth-ldap
 +Source105: nginx-http-shibboleth
++
  
  License: 2-clause BSD-like license
  
- BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
- BuildRequires: zlib-devel
+@@ -151,6 +164,7 @@ BuildRequires: zlib-devel
  BuildRequires: pcre-devel
+ BuildRequires: libxslt-devel
+ BuildRequires: gd-devel
 +BuildRequires: openldap-devel
  
  Provides: webserver
  
-@@ -175,6 +187,12 @@ sed -e 's|%%DEFAULTSTART%%|2 3 4 5|g' -e 's|%%DEFAULTSTOP%%|0 1 6|g' \
+@@ -216,6 +230,12 @@ sed -e 's|%%DEFAULTSTART%%|2 3 4 5|g' -e 's|%%DEFAULTSTOP%%|0 1 6|g' \
      -e 's|%%PROVIDES%%|nginx|g' < %{SOURCE2} > nginx.init
  sed -e 's|%%DEFAULTSTART%%||g' -e 's|%%DEFAULTSTOP%%|0 1 2 3 4 5 6|g' \
      -e 's|%%PROVIDES%%|nginx-debug|g' < %{SOURCE2} > nginx-debug.init
