@@ -49,13 +49,13 @@ pushd ~/rpmbuild/SOURCES
     #Headers More module
     git clone https://github.com/openresty/headers-more-nginx-module
     pushd headers-more-nginx-module
-    git checkout v0.29
+    git checkout v0.30rc1
     popd
 
     #Fancy Index module
     git clone https://github.com/aperezdc/ngx-fancyindex.git
     pushd ngx-fancyindex
-    git checkout 80db501
+    git checkout ba8b4ec
     popd
 
     #AJP module
@@ -72,6 +72,9 @@ pushd ~/rpmbuild/SOURCES
 
     #Shibboleth module
     git clone https://github.com/nginx-shib/nginx-http-shibboleth.git
+    pushd nginx-http-shibboleth
+    git checkout development
+    popd
 
 popd
 
