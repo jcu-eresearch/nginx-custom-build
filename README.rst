@@ -16,8 +16,8 @@ This version of Nginx is customised in a number of different ways:
   <https://github.com/nginx-shib/nginx-http-shibboleth>`_ module. This
   requires a Shibboleth SP built with FastCGI support and correctly
   configured.
-  Shibboleth authentication with applications served via Nginx.
-* Has SPDY support built (depends on OpenSSL 1.0.1 being installed)
+
+  This is built as a dynamic module and deployable using its own RPM package.
 * Adds LDAP authentication for Nginx using `nginx-ldap-auth
   <https://github.com/kvspb/nginx-auth-ldap>`_.
 * Has custom HTML XSLT transformation built in. This allows 
@@ -25,6 +25,7 @@ This version of Nginx is customised in a number of different ways:
   comes from `Diazo <http://diazo.org>`_ for theming).
 * Has the ``ngx-fancyindex`` module for folder listings.
 * Has the ``ngx_ajp_module`` module for talking to AJP backends.
+* Has HTTP/2 support built
 * Has XLST support built.
 
 See the build script for details of where these dependencies live.
