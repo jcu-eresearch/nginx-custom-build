@@ -1,26 +1,18 @@
 diff --git a/nginx.spec b/nginx.spec
-index 8d6d53c..493b052 100644
+index 00131a4..dd907ae 100644
 --- a/nginx.spec
 +++ b/nginx.spec
-@@ -27,6 +27,7 @@ Requires(post): chkconfig
- Requires: openssl >= 1.0.1
- BuildRequires: openssl-devel >= 1.0.1
- BuildRequires: perl-devel
-+BuildRequires: perl-ExtUtils-Embed
- BuildRequires: GeoIP-devel
- %endif
- 
-@@ -73,6 +74,9 @@ BuildRequires: libGeoIP-devel
- %define module_njs_shaid             91543c86f412
- %define module_njs_version           0.0.20160329.%{module_njs_shaid}
+@@ -74,6 +74,9 @@ BuildRequires: libGeoIP-devel
+ %define module_njs_shaid             1c50334fbea6
+ %define module_njs_version           %{main_version}.0.0.20160414.%{module_njs_shaid}
  %define module_njs_release           1%{?dist}.ngx
 +%define module_shib_shaid            d37376531c0575bc5cb20b2a92c829c7c49e004b
-+%define module_shib_version          0.0.20160329.%{module_shib_shaid}
++%define module_shib_version          0.0.20160427.%{module_shib_shaid}
 +%define module_shib_release          1%{?dist}.ngx
  
  %define bdir %{_builddir}/%{name}-%{main_version}
  
-@@ -111,6 +115,11 @@ BuildRequires: libGeoIP-devel
+@@ -112,6 +115,11 @@ BuildRequires: libGeoIP-devel
          --with-http_image_filter_module=dynamic \
          --with-http_geoip_module=dynamic \
          --with-http_perl_module=dynamic \
@@ -32,7 +24,7 @@ index 8d6d53c..493b052 100644
          --add-dynamic-module=njs-%{module_njs_shaid}/nginx \
          --with-threads \
          --with-stream \
-@@ -143,6 +152,13 @@ Source10: nginx.suse.logrotate
+@@ -144,6 +152,13 @@ Source10: nginx.suse.logrotate
  Source11: nginx-debug.service
  Source12: COPYRIGHT
  Source13: njs-%{module_njs_shaid}.tar.gz
@@ -46,7 +38,7 @@ index 8d6d53c..493b052 100644
  
  License: 2-clause BSD-like license
  
-@@ -151,6 +167,7 @@ BuildRequires: zlib-devel
+@@ -152,6 +167,7 @@ BuildRequires: zlib-devel
  BuildRequires: pcre-devel
  BuildRequires: libxslt-devel
  BuildRequires: gd-devel
@@ -54,7 +46,7 @@ index 8d6d53c..493b052 100644
  
  Provides: webserver
  
-@@ -208,6 +225,15 @@ Summary: nginx nJScript module
+@@ -209,6 +225,15 @@ Summary: nginx nJScript module
  %description module-njs
  Dynamic nJScript module for nginx.
  
@@ -70,7 +62,7 @@ index 8d6d53c..493b052 100644
  %prep
  %setup -q
  tar xvzf %SOURCE13
-@@ -216,6 +242,12 @@ sed -e 's|%%DEFAULTSTART%%|2 3 4 5|g' -e 's|%%DEFAULTSTOP%%|0 1 6|g' \
+@@ -217,6 +242,12 @@ sed -e 's|%%DEFAULTSTART%%|2 3 4 5|g' -e 's|%%DEFAULTSTOP%%|0 1 6|g' \
      -e 's|%%PROVIDES%%|nginx|g' < %{SOURCE2} > nginx.init
  sed -e 's|%%DEFAULTSTART%%||g' -e 's|%%DEFAULTSTOP%%|0 1 2 3 4 5 6|g' \
      -e 's|%%PROVIDES%%|nginx-debug|g' < %{SOURCE2} > nginx-debug.init
@@ -83,7 +75,7 @@ index 8d6d53c..493b052 100644
  
  %build
  ./configure %{COMMON_CONFIGURE_ARGS} \
-@@ -237,6 +269,8 @@ make %{?_smp_mflags}
+@@ -238,6 +269,8 @@ make %{?_smp_mflags}
      %{bdir}/objs/src/http/modules/perl/blib/arch/auto/nginx/nginx-debug.so
  %{__mv} %{bdir}/objs/ngx_http_js_module.so \
      %{bdir}/objs/ngx_http_js_module-debug.so
@@ -92,7 +84,7 @@ index 8d6d53c..493b052 100644
  ./configure %{COMMON_CONFIGURE_ARGS} \
      --with-cc-opt="%{WITH_CC_OPT}" \
      %{?perlldopts}
-@@ -325,6 +359,8 @@ cd $RPM_BUILD_ROOT%{_sysconfdir}/nginx && \
+@@ -326,6 +359,8 @@ cd $RPM_BUILD_ROOT%{_sysconfdir}/nginx && \
      $RPM_BUILD_ROOT%{perl_vendorarch}/auto/nginx/nginx-debug.so
  %{__install} -m644 %{bdir}/objs/ngx_http_js_module-debug.so \
      $RPM_BUILD_ROOT%{_libdir}/nginx/modules/ngx_http_js_module-debug.so
@@ -101,7 +93,7 @@ index 8d6d53c..493b052 100644
  
  %clean
  %{__rm} -rf $RPM_BUILD_ROOT
-@@ -399,6 +435,10 @@ cd $RPM_BUILD_ROOT%{_sysconfdir}/nginx && \
+@@ -400,6 +435,10 @@ cd $RPM_BUILD_ROOT%{_sysconfdir}/nginx && \
  %attr(0644,root,root) %{_libdir}/nginx/modules/ngx_http_js_module.so
  %attr(0644,root,root) %{_libdir}/nginx/modules/ngx_http_js_module-debug.so
  
@@ -112,7 +104,7 @@ index 8d6d53c..493b052 100644
  %pre
  # Add the "nginx" user
  getent group %{nginx_group} >/dev/null || groupadd -r %{nginx_group}
-@@ -539,6 +579,24 @@ https://www.nginx.com/resources/wiki/nginScript/
+@@ -540,6 +579,24 @@ https://www.nginx.com/resources/wiki/nginScript/
  BANNER
  fi
  
