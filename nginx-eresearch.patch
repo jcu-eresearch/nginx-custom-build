@@ -1,42 +1,71 @@
 diff --git a/nginx.spec b/nginx.spec
-index 281e40b..8a9a7d2 100644
+index 00131a4..dd907ae 100644
 --- a/nginx.spec
 +++ b/nginx.spec
-@@ -59,7 +59,7 @@ Requires: systemd
- Summary: High performance web server
- Name: nginx
- Version: 1.8.0
--Release: 1%{?dist}.ngx
-+Release: 3%{?dist}.ngx
- Vendor: nginx inc.
- URL: http://nginx.org/
+@@ -74,6 +74,9 @@ BuildRequires: libGeoIP-devel
+ %define module_njs_shaid             1c50334fbea6
+ %define module_njs_version           %{main_version}.0.0.20160414.%{module_njs_shaid}
+ %define module_njs_release           1%{?dist}.ngx
++%define module_shib_shaid            d37376531c0575bc5cb20b2a92c829c7c49e004b
++%define module_shib_version          0.0.20160427.%{module_shib_shaid}
++%define module_shib_release          1%{?dist}.ngx
  
-@@ -74,12 +74,21 @@ Source7: nginx.suse.init
- Source8: nginx.service
- Source9: nginx.upgrade.sh
- Source10: nginx.suse.logrotate
+ %define bdir %{_builddir}/%{name}-%{main_version}
+ 
+@@ -112,6 +115,11 @@ BuildRequires: libGeoIP-devel
+         --with-http_image_filter_module=dynamic \
+         --with-http_geoip_module=dynamic \
+         --with-http_perl_module=dynamic \
++        --add-module=%{bdir}/ngx-fancyindex \
++        --add-module=%{bdir}/nginx_ajp_module \
++        --add-module=%{bdir}/headers-more-nginx-module \
++        --add-module=%{bdir}/nginx-auth-ldap \
++        --add-dynamic-module=%{bdir}/nginx-http-shibboleth \
+         --add-dynamic-module=njs-%{module_njs_shaid}/nginx \
+         --with-threads \
+         --with-stream \
+@@ -144,6 +152,13 @@ Source10: nginx.suse.logrotate
+ Source11: nginx-debug.service
+ Source12: COPYRIGHT
+ Source13: njs-%{module_njs_shaid}.tar.gz
 +Source100: headers-more-nginx-module
 +Source101: ngx-fancyindex
 +Source102: nginx_ajp_module
 +Source103: nginx-xslt-html-parser.patch
 +Source104: nginx-auth-ldap
 +Source105: nginx-http-shibboleth
++
  
  License: 2-clause BSD-like license
  
- BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
- BuildRequires: zlib-devel
+@@ -152,6 +167,7 @@ BuildRequires: zlib-devel
  BuildRequires: pcre-devel
+ BuildRequires: libxslt-devel
+ BuildRequires: gd-devel
 +BuildRequires: openldap-devel
-+BuildRequires: libxml2-devel
-+BuildRequires: libxslt-devel
  
  Provides: webserver
  
-@@ -100,6 +109,12 @@ Not stripped version of nginx built with the debugging log support.
+@@ -209,6 +225,15 @@ Summary: nginx nJScript module
+ %description module-njs
+ Dynamic nJScript module for nginx.
  
++%package module-shib
++Version: %{module_shib_version}
++Release: %{module_shib_release}
++Group: %{_group}
++Requires: nginx = %{?epoch:%{epoch}:}%{main_version}-%{main_release}
++Summary: nginx shibboleth module
++%description module-shib
++Dynamic Shibboleth auth request module for Nginx
++
  %prep
  %setup -q
+ tar xvzf %SOURCE13
+@@ -217,6 +242,12 @@ sed -e 's|%%DEFAULTSTART%%|2 3 4 5|g' -e 's|%%DEFAULTSTOP%%|0 1 6|g' \
+     -e 's|%%PROVIDES%%|nginx|g' < %{SOURCE2} > nginx.init
+ sed -e 's|%%DEFAULTSTART%%||g' -e 's|%%DEFAULTSTOP%%|0 1 2 3 4 5 6|g' \
+     -e 's|%%PROVIDES%%|nginx-debug|g' < %{SOURCE2} > nginx-debug.init
 +cp -R -p %SOURCE100 .
 +cp -R -p %SOURCE101 .
 +cp -R -p %SOURCE102 .
@@ -45,32 +74,58 @@ index 281e40b..8a9a7d2 100644
 +cp -R -p %SOURCE105 .
  
  %build
- ./configure \
-@@ -137,6 +152,13 @@ Not stripped version of nginx built with the debugging log support.
-         --with-debug \
-         %{?with_spdy:--with-http_spdy_module} \
-         --with-cc-opt="%{optflags} $(pcre-config --cflags)" \
-+        --with-http_spdy_module \
-+        --with-http_xslt_module \
-+        --add-module=%{_builddir}/%{name}-%{version}/ngx-fancyindex \
-+        --add-module=%{_builddir}/%{name}-%{version}/nginx_ajp_module \
-+        --add-module=%{_builddir}/%{name}-%{version}/headers-more-nginx-module \
-+        --add-module=%{_builddir}/%{name}-%{version}/nginx-auth-ldap \
-+        --add-module=%{_builddir}/%{name}-%{version}/nginx-http-shibboleth \
-         $*
- make %{?_smp_mflags}
- %{__mv} %{_builddir}/%{name}-%{version}/objs/nginx \
-@@ -175,6 +197,13 @@ make %{?_smp_mflags}
-         --with-ipv6 \
-         %{?with_spdy:--with-http_spdy_module} \
-         --with-cc-opt="%{optflags} $(pcre-config --cflags)" \
-+        --with-http_spdy_module \
-+        --with-http_xslt_module \
-+        --add-module=%{_builddir}/%{name}-%{version}/ngx-fancyindex \
-+        --add-module=%{_builddir}/%{name}-%{version}/nginx_ajp_module \
-+        --add-module=%{_builddir}/%{name}-%{version}/headers-more-nginx-module \
-+        --add-module=%{_builddir}/%{name}-%{version}/nginx-auth-ldap \
-+        --add-module=%{_builddir}/%{name}-%{version}/nginx-http-shibboleth \
-         $*
- make %{?_smp_mflags}
+ ./configure %{COMMON_CONFIGURE_ARGS} \
+@@ -238,6 +269,8 @@ make %{?_smp_mflags}
+     %{bdir}/objs/src/http/modules/perl/blib/arch/auto/nginx/nginx-debug.so
+ %{__mv} %{bdir}/objs/ngx_http_js_module.so \
+     %{bdir}/objs/ngx_http_js_module-debug.so
++%{__mv} %{bdir}/objs/ngx_http_shibboleth_module.so \
++    %{bdir}/objs/ngx_http_shibboleth_module-debug.so
+ ./configure %{COMMON_CONFIGURE_ARGS} \
+     --with-cc-opt="%{WITH_CC_OPT}" \
+     %{?perlldopts}
+@@ -326,6 +359,8 @@ cd $RPM_BUILD_ROOT%{_sysconfdir}/nginx && \
+     $RPM_BUILD_ROOT%{perl_vendorarch}/auto/nginx/nginx-debug.so
+ %{__install} -m644 %{bdir}/objs/ngx_http_js_module-debug.so \
+     $RPM_BUILD_ROOT%{_libdir}/nginx/modules/ngx_http_js_module-debug.so
++%{__install} -m644 %{bdir}/objs/ngx_http_shibboleth_module-debug.so \
++    $RPM_BUILD_ROOT%{_libdir}/nginx/modules/ngx_http_shibboleth_module-debug.so
  
+ %clean
+ %{__rm} -rf $RPM_BUILD_ROOT
+@@ -400,6 +435,10 @@ cd $RPM_BUILD_ROOT%{_sysconfdir}/nginx && \
+ %attr(0644,root,root) %{_libdir}/nginx/modules/ngx_http_js_module.so
+ %attr(0644,root,root) %{_libdir}/nginx/modules/ngx_http_js_module-debug.so
+ 
++%files module-shib
++%attr(0644,root,root) %{_libdir}/nginx/modules/ngx_http_shibboleth_module.so
++%attr(0644,root,root) %{_libdir}/nginx/modules/ngx_http_shibboleth_module-debug.so
++
+ %pre
+ # Add the "nginx" user
+ getent group %{nginx_group} >/dev/null || groupadd -r %{nginx_group}
+@@ -540,6 +579,24 @@ https://www.nginx.com/resources/wiki/nginScript/
+ BANNER
+ fi
+ 
++%post module-shib
++if [ $1 -eq 1 ]; then
++    cat <<BANNER
++----------------------------------------------------------------------
++
++The Shibboleth dynamic module for nginx has been installed.
++To enable this module, add the following to /etc/nginx/nginx.conf
++and reload nginx:
++
++    load_module modules/ngx_http_shibboleth_module.so;
++
++Please refer to the module documentation for further details:
++https://github.com/nginx-shib/nginx-http-shibboleth
++
++----------------------------------------------------------------------
++BANNER
++fi
++
+ %preun
+ if [ $1 -eq 0 ]; then
+ %if %use_systemd

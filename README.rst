@@ -1,10 +1,13 @@
 About this Nginx
 ================
 
+.. image:: https://travis-ci.org/jcu-eresearch/nginx-custom-build.svg?branch=master
+   :target: https://travis-ci.org/jcu-eresearch/nginx-custom-build
+
 .. important::
-   This Nginx build currently supports version 1.8.x.  Please see the
+   This Nginx build currently supports version 1.10.0+.  Please see the
    tags within this repository for previously supported versions
-   (``v1.4.x``, ``v1.6.3``).
+   (``v1.4.x``, ``v1.6.3``, ``v1.8.x``, etc).
 
 This version of Nginx is customised in a number of different ways:
 
@@ -13,8 +16,8 @@ This version of Nginx is customised in a number of different ways:
   <https://github.com/nginx-shib/nginx-http-shibboleth>`_ module. This
   requires a Shibboleth SP built with FastCGI support and correctly
   configured.
-  Shibboleth authentication with applications served via Nginx.
-* Has SPDY support built (depends on OpenSSL 1.0.1 being installed)
+
+  This is built as a dynamic module and deployable using its own RPM package.
 * Adds LDAP authentication for Nginx using `nginx-ldap-auth
   <https://github.com/kvspb/nginx-auth-ldap>`_.
 * Has custom HTML XSLT transformation built in. This allows 
@@ -24,6 +27,7 @@ This version of Nginx is customised in a number of different ways:
   into Nginx's core.
 * Has the ``ngx-fancyindex`` module for folder listings.
 * Has the ``ngx_ajp_module`` module for talking to AJP backends.
+* Has HTTP/2 support built
 * Has XLST support built.
 
 See the build script for details of where these dependencies live.
@@ -47,46 +51,14 @@ https://github.com/jcu-eresearch/nginx-custom-build/blob/master/nginx-build.sh
 on your own EL 6 machine.  The script will automatically clone the latest
 patches from this GitHub repository.
 
-This Vagrant configuration will always build the **latest stable** version
-of Nginx.
+This Vagrant configuration in ``master`` will always build the **latest
+stable** version of Nginx.  Occasionally, mainline compatible versions will be
+present; consult available branches.
 
+It is also possible to select a specific version of Nginx to build against by
+setting the environment variable `_NGINX_VERSION` (such as
+``export _NGINX_VERSION=1.9.13``).
 
-Testing and debugging nginx-http-shibboleth
-===========================================
-
-Use the configuration `provided
-<https://github.com/jcu-eresearch/nginx-custom-build/blob/master/nginx.conf>`_,
-as your ``/etc/nginx/nginx.conf`` file, replacing anything that's already there.
-The configuration configures Nginx for debugging, and when ``nginx.debug`` 
-(from the ``nginx-debug`` package) is run, will cascade all debug messages 
-into the console.
-
-If you're specifically interested in the Shibboleth module, watch the output
-for comments consisting of ``shib request authorizer`` (and ``shib request``
-in general.  Using the configuration below, you can make a simple request 
-to make the Shib request authorizer work::
-
-    curl -i http://localhost/test1
-
-Using the configuration `provided
-<https://github.com/jcu-eresearch/nginx-custom-build/blob/master/nginx.conf>`_,
-must result in a ``401 Not Authorized`` response, which is correct.
-
-
-Tests
------
-
-Run the following::
-
-   curl -i http://localhost/test{1,2,3}
-
-and compare the request results with the comments in the configuration above.
-If any of the above don't behave exactly as specified this, the Shibboleth
-module may need to be updated.  If you find this, report an issue over at
-https://github.com/nginx-shib/nginx-http-shibboleth.
-
-If you think you've encounted a problem with the interaction with this specific
-Nginx build, then report an issue to this repository.  Thanks!
 
 
 Credits

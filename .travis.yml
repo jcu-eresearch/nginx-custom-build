@@ -1,0 +1,26 @@
+#env:
+#  # Don't use `NGINX` as the variable name or Nginx won't daemonise
+#  - _NGINX_VERSION=1.9.11
+#  - _NGINX_VERSION=1.8.1
+cache:
+  apt: true
+  directories:
+    - $HOME/.vagrant.d
+    - $HOME/downloads
+before_install:
+  - sudo rm /etc/apt/sources.list.d/mongodb.list
+before_script:
+  - mkdir downloads && cd downloads
+  - wget -c https://releases.hashicorp.com/vagrant/1.8.1/vagrant_1.8.1_x86_64.deb
+  - sudo dpkg -i vagrant*.deb
+  - cd ..
+  - wget -q https://www.virtualbox.org/download/oracle_vbox.asc -O- | sudo apt-key add -
+  - echo "deb http://download.virtualbox.org/virtualbox/debian precise contrib" | sudo tee -a /etc/apt/sources.list
+  - sudo apt-get update -qq
+  - sudo apt-get -y install linux-headers-$(uname -r)
+  - sudo apt-get install virtualbox-5.0 -y
+  - vagrant plugin install vagrant-vbguest
+script:
+  - vagrant up --provision
+after_script:
+  - ls -R RPMS/ SRPMS/

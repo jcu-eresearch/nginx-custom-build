@@ -1,6 +1,13 @@
 Changes
 =======
 
+1.9.x (unreleased)
+------------------
+
+* Update for Nginx 1.9.13.
+* Build nginx-http-shibboleth module dynamically into its own RPM package.
+* Update all modules to latest compatible versions.
+
 1.6.3-1 (2015-04-09)
 --------------------
 

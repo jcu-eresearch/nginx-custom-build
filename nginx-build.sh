@@ -3,6 +3,9 @@
 #Clean up old nginx builds
 sudo rm -rf ~/rpmbuild/RPMS/*/nginx-*.rpm
 
+#Configure EPEL for GeoIP-devel
+sudo rpm -ivh https://dl.fedoraproject.org/pub/epel/epel-release-latest-6.noarch.rpm
+
 #Install required packages for building
 sudo yum groupinstall -y 'Development tools'
 sudo yum install -y \
@@ -16,13 +19,25 @@ sudo yum install -y \
 
 #Install source RPM for Nginx
 pushd ~
-echo """[nginx]
+echo """[nginx-source]
 name=nginx repo
 baseurl=http://nginx.org/packages/centos/6/SRPMS/
 gpgcheck=0
 enabled=1""" > nginx.repo
 sudo mv nginx.repo /etc/yum.repos.d/
-yumdownloader --source nginx
+
+# Download specific Nginx version or just the latest version
+rm -rf nginx*.src.rpm
+if [ $_NGINX_VERSION ]; then
+    yumdownloader --source "nginx-$_NGINX_VERSION"
+else
+    yumdownloader --source nginx
+fi
+if ! [ $? -eq 0 ]; then
+    echo "Couldn't download Nginx source RPM. Aborting build."
+    exit 1
+fi
+
 sudo rpm -ihv nginx*.src.rpm
 popd
 
@@ -34,13 +49,13 @@ pushd ~/rpmbuild/SOURCES
     #Headers More module
     git clone https://github.com/openresty/headers-more-nginx-module
     pushd headers-more-nginx-module
-    git checkout v0.261
+    git checkout v0.30rc1
     popd
 
     #Fancy Index module
     git clone https://github.com/aperezdc/ngx-fancyindex.git
     pushd ngx-fancyindex
-    git checkout v0.3.5
+    git checkout ba8b4ec
     popd
 
     #AJP module
@@ -52,11 +67,14 @@ pushd ~/rpmbuild/SOURCES
     #LDAP authentication module
     git clone https://github.com/kvspb/nginx-auth-ldap.git
     pushd nginx-auth-ldap
-    git checkout 928856a
+    git checkout d0f2f82
     popd
 
     #Shibboleth module
     git clone https://github.com/nginx-shib/nginx-http-shibboleth.git
+    pushd nginx-http-shibboleth
+    git checkout development
+    popd
 
 popd
 
@@ -81,6 +99,11 @@ patch -p1 < nginx-eresearch.patch
 spectool -g -R nginx.spec
 yum-builddep -y nginx.spec
 rpmbuild -ba nginx.spec
+
+if ! [ $? -eq 0 ]; then
+    echo "RPM build failed. See the output above to establish why."
+    exit 1
+fi
 
 #Test installation and check output
 sudo yum remove -y nginx nginx-debug
