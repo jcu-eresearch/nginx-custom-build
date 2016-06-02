@@ -7,7 +7,7 @@ index 00131a4..dd907ae 100644
  %define module_njs_version           %{main_version}.0.0.20160414.%{module_njs_shaid}
  %define module_njs_release           1%{?dist}.ngx
 +%define module_shib_shaid            d37376531c0575bc5cb20b2a92c829c7c49e004b
-+%define module_shib_version          0.0.20160427.%{module_shib_shaid}
++%define module_shib_version          %{main_version}.0.0.20160427.%{module_shib_shaid}
 +%define module_shib_release          1%{?dist}.ngx
  
  %define bdir %{_builddir}/%{name}-%{main_version}
