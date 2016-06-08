@@ -35,31 +35,32 @@ See the build script for details of where these dependencies live.
 Building Nginx
 ==============
 
-#. Ensure Vagrant is installed.
+#. Ensure `Docker <https://docs.docker.com/>`_ is installed.
 
 #. Run the following::
 
        git clone https://github.com/jcu-eresearch/nginx-custom-build.git
        cd nginx-custom-build
-       vagrant up; vagrant destroy -f
-       ls x86_64
+       docker build -t eresearch-nginx:latest .
+       docker run --rm -v $(pwd):/app eresearch-nginx
 
-#. Enjoy your new RPMs, available in the current directory.
+#. Enjoy your new RPMs, available in the `build/` directory.
 
-If you're not into Vagrant, then you can manually run
+If you're not into Docker, then you can manually run
 https://github.com/jcu-eresearch/nginx-custom-build/blob/master/nginx-build.sh
-on your own EL 6 machine.  The script will automatically clone the latest
-patches from this GitHub repository.
+on your own EL 6 machine, ensuring that you set up your build environment
+first. You can follow the `Dockerfile
+<https://github.com/jcu-eresearch/nginx-custom-build/blob/master/Dockerfile>`_
+and its ``RUN`` commands.  Otherwise, the build script is self-contained and
+will automatically clone the latest patches from this GitHub repository.
 
-This Vagrant configuration in ``master`` will always build the **latest
+The configuration in ``master`` will always build the **latest
 stable** version of Nginx.  Occasionally, mainline compatible versions will be
 present; consult available branches.
 
 It is also possible to select a specific version of Nginx to build against by
 setting the environment variable `_NGINX_VERSION` (such as
 ``export _NGINX_VERSION=1.9.13``).
-
-
 
 Credits
 =======

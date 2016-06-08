@@ -4,6 +4,8 @@ Changes
 1.10.x (unreleased)
 ------------------
 
+* Switch to Docker for builds.
+* Moved and refactored some of the build script to Docker's RUN layers.
 * Change nginx shib module's version to feature nginx's main version.
 * Update for nginx 1.10.1.
 * Update for nginx 1.9.13.
