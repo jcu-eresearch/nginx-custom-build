@@ -2,25 +2,21 @@
 #  # Don't use `NGINX` as the variable name or Nginx won't daemonise
 #  - _NGINX_VERSION=1.9.11
 #  - _NGINX_VERSION=1.8.1
-cache:
-  apt: true
-  directories:
-    - $HOME/.vagrant.d
-    - $HOME/downloads
+sudo: required
+services:
+  - docker
+env:
+  DOCKER_COMPOSE_VERSION: 1.7.1
+  DEBIAN_FRONTEND: noninteractive
 before_install:
-  - sudo rm /etc/apt/sources.list.d/mongodb.list
-before_script:
-  - mkdir downloads && cd downloads
-  - wget -c https://releases.hashicorp.com/vagrant/1.8.1/vagrant_1.8.1_x86_64.deb
-  - sudo dpkg -i vagrant*.deb
-  - cd ..
-  - wget -q https://www.virtualbox.org/download/oracle_vbox.asc -O- | sudo apt-key add -
-  - echo "deb http://download.virtualbox.org/virtualbox/debian precise contrib" | sudo tee -a /etc/apt/sources.list
-  - sudo apt-get update -qq
-  - sudo apt-get -y install linux-headers-$(uname -r)
-  - sudo apt-get install virtualbox-5.0 -y
-  - vagrant plugin install vagrant-vbguest
+  - sudo apt-get update
+  - sudo apt-get -o Dpkg::Options::="--force-confnew" install -y docker-engine
+  - sudo service docker restart
+  - sudo rm /usr/local/bin/docker-compose
+  - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
+  - chmod +x docker-compose
+  - sudo mv docker-compose /usr/local/bin
 script:
-  - vagrant up --provision
+  - docker-compose up --build
 after_script:
-  - ls -R RPMS/ SRPMS/
+  - ls -R build/
