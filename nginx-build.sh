@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Create directories if not already present
+mkdir -p ~/rpmbuild/{SPECS,SOURCES}
+
 # Obtain a location for the patches, either from /app (Docker)
 # or cloned from GitHub (if run stand-alone).
 if [ -d '/app' ]; then

@@ -27,4 +27,3 @@ CMD /app/nginx-build.sh && \
   yum install -y ~/rpmbuild/RPMS/x86_64/nginx-*.rpm && \
   nginx -t && \
   rsync --no-relative -vahu ~/rpmbuild/RPMS ~/rpmbuild/SRPMS /app/build
-

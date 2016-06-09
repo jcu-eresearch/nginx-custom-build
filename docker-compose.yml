@@ -1,0 +1,6 @@
+version: '2'
+services:
+  nginx-custom-build:
+    build: .
+    volumes:
+      - .:/app

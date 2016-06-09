@@ -35,14 +35,14 @@ See the build script for details of where these dependencies live.
 Building Nginx
 ==============
 
-#. Ensure `Docker <https://docs.docker.com/>`_ is installed.
+#. Ensure `Docker <https://docs.docker.com/>`_ and `Docker Compose
+   <https://docs.docker.com/compose>`_ are installed.
 
 #. Run the following::
 
        git clone https://github.com/jcu-eresearch/nginx-custom-build.git
        cd nginx-custom-build
-       docker build -t eresearch-nginx:latest .
-       docker run --rm -v $(pwd):/app eresearch-nginx
+       docker-compose up
 
 #. Enjoy your new RPMs, available in the `build/` directory.
 
