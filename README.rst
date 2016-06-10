@@ -60,7 +60,10 @@ present; consult available branches.
 
 It is also possible to select a specific version of Nginx to build against by
 setting the environment variable `_NGINX_VERSION` (such as
-``export _NGINX_VERSION=1.9.13``).
+``export _NGINX_VERSION=1.9.13``), which is used within the build script.
+From Docker Compose, you can use the following::
+
+    docker-compose run -e _NGINX_VERSION=1.8.1 nginx-custom-build
 
 Credits
 =======
