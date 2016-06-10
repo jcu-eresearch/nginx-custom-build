@@ -4,6 +4,7 @@ Changes
 1.10.x (unreleased)
 ------------------
 
+* Fix capitalisation of nginx.
 * Simplify Docker configuration with Docker Compose.
 * Switch to Docker for builds.
 * Moved and refactored some of the build script to Docker's RUN layers.

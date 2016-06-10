@@ -19,20 +19,20 @@ if ! [ -d '/app' ]; then
     rm -rf "$patch_dir"
 fi
 
-# Download specific Nginx version or just the latest version
+# Download specific nginx version or just the latest version
 if [ "$_NGINX_VERSION" ]; then
     yumdownloader --source "nginx-$_NGINX_VERSION"
 else
     yumdownloader --source nginx
 fi
 if ! [ $? -eq 0 ]; then
-    echo "Couldn't download Nginx source RPM. Aborting build."
+    echo "Couldn't download nginx source RPM. Aborting build."
     exit 1
 fi
 
 sudo rpm -ihv nginx*.src.rpm
 
-#Get various add-on modules for Nginx
+#Get various add-on modules for nginx
 #XXX git clone -b [tag] isn't supported on git 1.7 (RHEL 6)
 pushd ~/rpmbuild/SOURCES
 
@@ -68,7 +68,7 @@ pushd ~/rpmbuild/SOURCES
 
 popd
 
-#Prep and patch the Nginx specfile for the RPMs
+#Prep and patch the nginx specfile for the RPMs
 pushd ~/rpmbuild/SPECS
     patch -p1 < nginx-eresearch.patch
     spectool -g -R nginx.spec

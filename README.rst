@@ -1,30 +1,30 @@
-About this Nginx
+About this nginx
 ================
 
 .. image:: https://travis-ci.org/jcu-eresearch/nginx-custom-build.svg?branch=master
    :target: https://travis-ci.org/jcu-eresearch/nginx-custom-build
 
 .. important::
-   This Nginx build currently supports version 1.10.0+.  Please see the
+   This nginx build currently supports version 1.10.0+.  Please see the
    tags within this repository for previously supported versions
    (``v1.4.x``, ``v1.6.3``, ``v1.8.x``, etc).
 
-This version of Nginx is customised in a number of different ways:
+This version of nginx is customised in a number of different ways:
 
 * Adds support for Shibboleth authentication for applications served
-  by Nginx using the `nginx-http-shibboleth
+  by nginx using the `nginx-http-shibboleth
   <https://github.com/nginx-shib/nginx-http-shibboleth>`_ module. This
   requires a Shibboleth SP built with FastCGI support and correctly
   configured.
 
   This is built as a dynamic module and deployable using its own RPM package.
-* Adds LDAP authentication for Nginx using `nginx-ldap-auth
+* Adds LDAP authentication for nginx using `nginx-ldap-auth
   <https://github.com/kvspb/nginx-auth-ldap>`_.
 * Has custom HTML XSLT transformation built in. This allows 
   transformation of HTML documents on-the-fly via XSL (eg that which
   comes from `Diazo <http://diazo.org>`_ for theming).  Help support
   the `patch being merged <https://trac.nginx.org/nginx/ticket/609>`_
-  into Nginx's core.
+  into nginx's core.
 * Has the ``ngx-fancyindex`` module for folder listings.
 * Has the ``ngx_ajp_module`` module for talking to AJP backends.
 * Has HTTP/2 support built
@@ -32,7 +32,7 @@ This version of Nginx is customised in a number of different ways:
 
 See the build script for details of where these dependencies live.
 
-Building Nginx
+Building nginx
 ==============
 
 #. Ensure `Docker <https://docs.docker.com/>`_ and `Docker Compose
@@ -55,10 +55,10 @@ and its ``RUN`` commands.  Otherwise, the build script is self-contained and
 will automatically clone the latest patches from this GitHub repository.
 
 The configuration in ``master`` will always build the **latest
-stable** version of Nginx.  Occasionally, mainline compatible versions will be
+stable** version of nginx.  Occasionally, mainline compatible versions will be
 present; consult available branches.
 
-It is also possible to select a specific version of Nginx to build against by
+It is also possible to select a specific version of nginx to build against by
 setting the environment variable `_NGINX_VERSION` (such as
 ``export _NGINX_VERSION=1.9.13``), which is used within the build script.
 From Docker Compose, you can use the following::
@@ -69,6 +69,6 @@ Credits
 =======
 
 * Thanks to `Luca Bruno <https://github.com/lucab>`_ for taking my Shibboleth
-  work and creating a full Nginx module.
+  work and creating a full nginx module.
 * Thanks to Laurence Rowe for the patches for making HTML transformations
   possible at https://bitbucket.org/lrowe/nginx-xslt-html-parser

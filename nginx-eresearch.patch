@@ -57,7 +57,7 @@ index 00131a4..dd907ae 100644
 +Requires: nginx = %{?epoch:%{epoch}:}%{main_version}-%{main_release}
 +Summary: nginx shibboleth module
 +%description module-shib
-+Dynamic Shibboleth auth request module for Nginx
++Dynamic Shibboleth auth request module for nginx
 +
  %prep
  %setup -q
