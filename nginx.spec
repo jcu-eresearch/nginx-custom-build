@@ -77,7 +77,10 @@ Source23: set-misc-nginx-module
 Source24: ngx_http_consistent_hash
 Source25: nginx.te
 Source26: nginx.pp
-
+%if 0%{?rhel}  == 7
+Source27: passenger
+Source28: passenger.conf
+%endif
 
 License: 2-clause BSD-like license
 
@@ -92,6 +95,16 @@ BuildRequires: pam-devel
 BuildRequires: selinux-policy-targeted
 Requires: policycoreutils
 
+%if 0%{?rhel}  == 7
+# Begin Passenger module requires
+BuildRequires: libcurl-devel
+BuildRequires: httpd-devel
+BuildRequires: libev-devel >= 4.0.0
+BuildRequires: ruby
+BuildRequires: ruby-devel
+BuildRequires: rubygems
+BuildRequires: rubygems-devel
+%endif
 
 Provides: webserver
 
@@ -131,6 +144,9 @@ cp -R -p %SOURCE22 .
 cp -R -p %SOURCE23 .
 cp -R -p %SOURCE24 .
 cp -R -p %SOURCE25 .
+%if 0%{?rhel}  == 7
+cp -R -p %SOURCE27 .
+%endif
 
 %build
 ./configure \
@@ -187,6 +203,9 @@ cp -R -p %SOURCE25 .
 	--add-module=%{_builddir}/%{name}-%{version}/set-misc-nginx-module \
 	--add-module=%{_builddir}/%{name}-%{version}/ngx_http_consistent_hash \
 	--add-module=%{_builddir}/%{name}-%{version}/ngx_http_auth_pam_module \
+%if 0%{?rhel}  == 7
+  --add-module=%{_builddir}/%{name}-%{version}/passenger/src/nginx_module \
+%endif
 
         $*
 make %{?_smp_mflags}
@@ -245,7 +264,9 @@ make %{?_smp_mflags}
         --add-module=%{_builddir}/%{name}-%{version}/set-misc-nginx-module \
         --add-module=%{_builddir}/%{name}-%{version}/ngx_http_consistent_hash \
         --add-module=%{_builddir}/%{name}-%{version}/ngx_http_auth_pam_module \
-
+%if 0%{?rhel}  == 7
+        --add-module=%{_builddir}/%{name}-%{version}/passenger/src/nginx_module \
+%endif
         $*
 make %{?_smp_mflags}
 
@@ -274,8 +295,10 @@ semodule_package -o %SOURCE26 -m nginx.mod
    $RPM_BUILD_ROOT%{_sysconfdir}/nginx/conf.d/default.conf.sample
 %{__install} -m 644 -p %{SOURCE6} \
    $RPM_BUILD_ROOT%{_sysconfdir}/nginx/conf.d/example_ssl.conf.sample
-
-
+%if 0%{?rhel}  == 7
+%{__install} -m 644 -p %{SOURCE28} \
+    $RPM_BUILD_ROOT%{_sysconfdir}/nginx/conf.d/passenger.conf
+%endif
 %{__mkdir} -p $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig
 %{__install} -m 644 -p %{SOURCE3} \
    $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig/nginx
@@ -324,7 +347,9 @@ install -p -m 644 -D %{SOURCE26} \
 %config(noreplace) %{_sysconfdir}/nginx/nginx.conf
 %config(noreplace) %{_sysconfdir}/nginx/conf.d/default.conf.sample
 %config(noreplace) %{_sysconfdir}/nginx/conf.d/example_ssl.conf.sample
-
+%if 0%{?rhel}  == 7
+%config(noreplace) %{_sysconfdir}/nginx/conf.d/passenger.conf
+%endif
 %config(noreplace) %{_sysconfdir}/nginx/mime.types
 %config(noreplace) %{_sysconfdir}/nginx/fastcgi_params
 %config(noreplace) %{_sysconfdir}/nginx/scgi_params
@@ -421,7 +446,7 @@ semodule -r nginx 2>/dev/null || :
 %endif
 fi
 
-%preun policy 
+%preun policy
 semodule -r nginx 2>/dev/null || :
 
 %postun
@@ -434,7 +459,7 @@ if [ $1 -ge 1 ]; then
         "Binary upgrade failed, please check nginx's error.log"
 fi
 
-%postun policy 
+%postun policy
 semodule -i %{_datadir}/selinux/packages/nginx/nginx.pp 2>/dev/null || :
 setsebool -P httpd_can_network_connect on 2>/dev/null ||:
 setsebool -P httpd_can_network_relay on 2>/dev/null ||:
@@ -558,4 +583,3 @@ setsebool -P httpd_can_network_relay on 2>/dev/null ||:
 
 * Tue Aug 10 2011 Sergey Budnevitch
 - Initial release
-
