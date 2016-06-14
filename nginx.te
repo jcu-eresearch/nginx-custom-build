@@ -2,9 +2,21 @@ module nginx 1.0;
 
 require {
 	type httpd_t;
+	type http_cache_port_t;
+	type puppet_port_t;
 	type httpd_config_t;
+	type httpd_port_t;
+	type http_port_t;
+	type hostname_t;
+	type transproxy_port_t;
+	type inotifyfs_t;
+	class tcp_socket name_connect;
+	class dir read;
 	class dir { write create add_name setattr };
 }
+
+#============= hostname_t ==============
+allow hostname_t inotifyfs_t:dir read;
 
 #============= httpd_t ==============
 #!!!! The source type 'httpd_t' can write to a 'dir' of the following types:
@@ -14,4 +26,8 @@ allow httpd_t httpd_config_t:dir write;
 
 #!!!! This avc is allowed in the current policy
 allow httpd_t httpd_config_t:dir { create add_name setattr };
+allow httpd_t transproxy_port_t:tcp_socket name_connect;
 
+allow httpd_t http_cache_port_t:tcp_socket name_connect;
+allow httpd_t puppet_port_t:tcp_socket name_connect;
+allow httpd_t usr_t:sock_file write;
