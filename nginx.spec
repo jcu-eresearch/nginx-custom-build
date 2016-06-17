@@ -100,11 +100,10 @@ Requires: policycoreutils
 BuildRequires: libcurl-devel
 BuildRequires: httpd-devel
 BuildRequires: libev-devel >= 4.0.0
-BuildRequires: ruby >= 2.2.5
-# These should be obsoleted in 2.2.5
-# BuildRequires: ruby-devel
-# BuildRequires: rubygems
-# BuildRequires: rubygems-devel
+BuildRequires: ruby
+BuildRequires: ruby-devel
+BuildRequires: rubygems
+BuildRequires: rubygems-devel
 %endif
 
 Provides: webserver
