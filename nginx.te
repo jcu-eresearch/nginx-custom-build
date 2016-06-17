@@ -9,6 +9,7 @@ require {
 	type http_port_t;
 	type hostname_t;
 	type transproxy_port_t;
+	type usr_t;
 	type inotifyfs_t;
 	class tcp_socket name_connect;
 	class dir read;
