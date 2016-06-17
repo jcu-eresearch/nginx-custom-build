@@ -13,6 +13,7 @@ require {
 	type inotifyfs_t;
 	class tcp_socket name_connect;
 	class dir read;
+	class sock_file write;
 	class dir { write create add_name setattr };
 }
 
