@@ -5,7 +5,6 @@ require {
 	type http_cache_port_t;
 	type puppet_port_t;
 	type httpd_config_t;
-	type httpd_port_t;
 	type http_port_t;
 	type hostname_t;
 	type transproxy_port_t;
