@@ -1,5 +1,9 @@
 Changes
 =======
+1.10.1-2
+* Adding selinux policy back in to the 1.10.1 spec.  Build is now one package
+per module.
+
 1.8.0-1 (2015-10-23)
 --------------------
 * Added Phusion Passenger Module Support
