@@ -66,6 +66,12 @@ pushd ~/rpmbuild/SOURCES
     git checkout development
     popd
 
+    #PAM module
+    git clone https://github.com/stogh/ngx_http_auth_pam_module.git
+    pushd ngx_http_auth_pam_module
+    git checkout f5d706a
+    popd
+
 popd
 
 #Prep and patch the nginx specfile for the RPMs

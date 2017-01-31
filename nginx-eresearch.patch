@@ -1,8 +1,14 @@
-diff --git a/nginx.spec b/nginx.spec
-index 00131a4..dd907ae 100644
---- a/nginx.spec
-+++ b/nginx.spec
-@@ -74,6 +74,9 @@ BuildRequires: libGeoIP-devel
+--- a/nginx.spec	2016-05-18 17:29:01.698461963 -0400
++++ b/nginx.spec	2016-05-18 17:39:59.150785815 -0400
+@@ -29,6 +29,7 @@
+ BuildRequires: perl-devel
+ BuildRequires: perl-ExtUtils-Embed
+ BuildRequires: GeoIP-devel
++BuildRequires: pam-devel
+ %endif
+ 
+ %if 0%{?rhel}  == 7
+@@ -74,6 +75,9 @@
  %define module_njs_shaid             1c50334fbea6
  %define module_njs_version           %{main_version}.0.0.20160414.%{module_njs_shaid}
  %define module_njs_release           1%{?dist}.ngx
@@ -12,7 +18,7 @@ index 00131a4..dd907ae 100644
  
  %define bdir %{_builddir}/%{name}-%{main_version}
  
-@@ -112,6 +115,11 @@ BuildRequires: libGeoIP-devel
+@@ -112,6 +116,12 @@
          --with-http_image_filter_module=dynamic \
          --with-http_geoip_module=dynamic \
          --with-http_perl_module=dynamic \
@@ -20,11 +26,12 @@ index 00131a4..dd907ae 100644
 +        --add-module=%{bdir}/nginx_ajp_module \
 +        --add-module=%{bdir}/headers-more-nginx-module \
 +        --add-module=%{bdir}/nginx-auth-ldap \
++        --add-module=%{bdir}/ngx_http_auth_pam_module \
 +        --add-dynamic-module=%{bdir}/nginx-http-shibboleth \
          --add-dynamic-module=njs-%{module_njs_shaid}/nginx \
          --with-threads \
          --with-stream \
-@@ -144,6 +152,13 @@ Source10: nginx.suse.logrotate
+@@ -144,6 +154,14 @@
  Source11: nginx-debug.service
  Source12: COPYRIGHT
  Source13: njs-%{module_njs_shaid}.tar.gz
@@ -34,11 +41,12 @@ index 00131a4..dd907ae 100644
 +Source103: nginx-xslt-html-parser.patch
 +Source104: nginx-auth-ldap
 +Source105: nginx-http-shibboleth
++Source106: ngx_http_auth_pam_module
 +
  
  License: 2-clause BSD-like license
  
-@@ -152,6 +167,7 @@ BuildRequires: zlib-devel
+@@ -152,6 +170,7 @@
  BuildRequires: pcre-devel
  BuildRequires: libxslt-devel
  BuildRequires: gd-devel
@@ -46,7 +54,7 @@ index 00131a4..dd907ae 100644
  
  Provides: webserver
  
-@@ -209,6 +225,15 @@ Summary: nginx nJScript module
+@@ -209,6 +228,15 @@
  %description module-njs
  Dynamic nJScript module for nginx.
  
@@ -62,7 +70,7 @@ index 00131a4..dd907ae 100644
  %prep
  %setup -q
  tar xvzf %SOURCE13
-@@ -217,6 +242,12 @@ sed -e 's|%%DEFAULTSTART%%|2 3 4 5|g' -e 's|%%DEFAULTSTOP%%|0 1 6|g' \
+@@ -217,6 +245,13 @@
      -e 's|%%PROVIDES%%|nginx|g' < %{SOURCE2} > nginx.init
  sed -e 's|%%DEFAULTSTART%%||g' -e 's|%%DEFAULTSTOP%%|0 1 2 3 4 5 6|g' \
      -e 's|%%PROVIDES%%|nginx-debug|g' < %{SOURCE2} > nginx-debug.init
@@ -72,10 +80,11 @@ index 00131a4..dd907ae 100644
 +patch -p1 < %SOURCE103
 +cp -R -p %SOURCE104 .
 +cp -R -p %SOURCE105 .
++cp -R -p %SOURCE106 .
  
  %build
  ./configure %{COMMON_CONFIGURE_ARGS} \
-@@ -238,6 +269,8 @@ make %{?_smp_mflags}
+@@ -238,6 +273,8 @@
      %{bdir}/objs/src/http/modules/perl/blib/arch/auto/nginx/nginx-debug.so
  %{__mv} %{bdir}/objs/ngx_http_js_module.so \
      %{bdir}/objs/ngx_http_js_module-debug.so
@@ -84,7 +93,7 @@ index 00131a4..dd907ae 100644
  ./configure %{COMMON_CONFIGURE_ARGS} \
      --with-cc-opt="%{WITH_CC_OPT}" \
      %{?perlldopts}
-@@ -326,6 +359,8 @@ cd $RPM_BUILD_ROOT%{_sysconfdir}/nginx && \
+@@ -326,6 +363,8 @@
      $RPM_BUILD_ROOT%{perl_vendorarch}/auto/nginx/nginx-debug.so
  %{__install} -m644 %{bdir}/objs/ngx_http_js_module-debug.so \
      $RPM_BUILD_ROOT%{_libdir}/nginx/modules/ngx_http_js_module-debug.so
@@ -93,7 +102,7 @@ index 00131a4..dd907ae 100644
  
  %clean
  %{__rm} -rf $RPM_BUILD_ROOT
-@@ -400,6 +435,10 @@ cd $RPM_BUILD_ROOT%{_sysconfdir}/nginx && \
+@@ -400,6 +439,10 @@
  %attr(0644,root,root) %{_libdir}/nginx/modules/ngx_http_js_module.so
  %attr(0644,root,root) %{_libdir}/nginx/modules/ngx_http_js_module-debug.so
  
@@ -104,10 +113,12 @@ index 00131a4..dd907ae 100644
  %pre
  # Add the "nginx" user
  getent group %{nginx_group} >/dev/null || groupadd -r %{nginx_group}
-@@ -540,6 +579,24 @@ https://www.nginx.com/resources/wiki/nginScript/
- BANNER
- fi
+@@ -538,6 +581,24 @@
  
+ ----------------------------------------------------------------------
+ BANNER
++fi
++
 +%post module-shib
 +if [ $1 -eq 1 ]; then
 +    cat <<BANNER
@@ -124,8 +135,6 @@ index 00131a4..dd907ae 100644
 +
 +----------------------------------------------------------------------
 +BANNER
-+fi
-+
+ fi
+ 
  %preun
- if [ $1 -eq 0 ]; then
- %if %use_systemd

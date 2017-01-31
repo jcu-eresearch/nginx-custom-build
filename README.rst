@@ -20,6 +20,8 @@ This version of nginx is customised in a number of different ways:
   This is built as a dynamic module and deployable using its own RPM package.
 * Adds LDAP authentication for nginx using `nginx-ldap-auth
   <https://github.com/kvspb/nginx-auth-ldap>`_.
+* Adds PAM authentication for Nginx using `ngx_http_auth_pam_module
+  <https://github.com/stogh/ngx_http_auth_pam_module>`_.
 * Has custom HTML XSLT transformation built in. This allows 
   transformation of HTML documents on-the-fly via XSL (eg that which
   comes from `Diazo <http://diazo.org>`_ for theming).  Help support
