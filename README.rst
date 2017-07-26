@@ -1,3 +1,7 @@
+Deprecated and no longer supported or maintained.  See
+<https://github.com/jcu-eresearch/nginx-dynamic-modules> instead for how to build
+dynamic modules separately without needing to recompile nginx.
+
 About this nginx
 ================
 
